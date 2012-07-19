@@ -66,13 +66,12 @@ public class Activator implements BundleActivator, Runnable {
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				/*
 				try {
-					
-					context.getBundle(0).stop();
+					//shutdown current bundle
+					context.getBundle().stop();
 				} catch (BundleException e) {
 					e.printStackTrace();
-				}*/
+				}
 			}
 		});
 		frame.setVisible(true);

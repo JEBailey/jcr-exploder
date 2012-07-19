@@ -13,7 +13,6 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -43,7 +42,7 @@ public class ExplorerIDE {
 
 	public JFrame frmJcrExploder;
 	
-	private RSyntaxTextArea editorPane;
+	private RSyntaxTextArea editorTextArea;
 	
 	private ResourceResolver resourceResolver;
 
@@ -118,8 +117,8 @@ public class ExplorerIDE {
 		} catch (IOException e) {
 			reply = "problem reading stream";
 		}
-		editorPane.setText(reply);
-		editorPane.setCaretPosition(0);
+		editorTextArea.setText(reply);
+		editorTextArea.setCaretPosition(0);
 	}
 	
 	
@@ -145,17 +144,20 @@ public class ExplorerIDE {
 		splitPane.setRightComponent(splitPane_1);
 		
 		
-		
-		editorPane = new RSyntaxTextArea();
-		editorPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		editorPane.setCodeFoldingEnabled(true);
-		editorPane.setAntiAliasingEnabled(true);
+		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
+		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		editorTextArea.setCodeFoldingEnabled(true);
+		editorTextArea.setAntiAliasingEnabled(true);
+		editorTextArea.setEditable(true);
 		//set to edit java by default
 		//editorPane.setEditorKit();
-		editorPane.setText("public static void main(String[] args) {\n}");
 		
-		RTextScrollPane editorScrollPane = new RTextScrollPane(editorPane);
+		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
 		splitPane_1.setLeftComponent(editorScrollPane);
+		
+		editorTextArea.setText("public static void main(String[] args) {\n}");
+		
+		
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
 		splitPane_1.setRightComponent(scrollPane_2);
