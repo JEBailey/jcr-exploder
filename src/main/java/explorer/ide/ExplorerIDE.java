@@ -30,17 +30,20 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import explorer.ide.tree.JcrJTree;
 import explorer.ide.tree.JcrNodeTreeModel;
 import explorer.ide.tree.JcrTableModelImpl;
 import explorer.ide.tree.JcrTreeCellRenderer;
 
-public class HeavyIDE {
+public class ExplorerIDE {
 
 	public JFrame frmJcrExploder;
 	
-	private JEditorPane editorPane;
+	private RSyntaxTextArea editorPane;
 	
 	private ResourceResolver resourceResolver;
 
@@ -51,7 +54,7 @@ public class HeavyIDE {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					HeavyIDE window = new HeavyIDE();
+					ExplorerIDE window = new ExplorerIDE();
 					window.frmJcrExploder.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -68,11 +71,11 @@ public class HeavyIDE {
 	/**
 	 * Create the application.
 	 */
-	public HeavyIDE() {
+	public ExplorerIDE() {
 		initialize();
 	}
 	
-	public HeavyIDE(ResourceResolver resourceResolver) {
+	public ExplorerIDE(ResourceResolver resourceResolver) {
 		initialize();
 		this.resourceResolver = resourceResolver;
 		tree.setModel(new JcrNodeTreeModel(resourceResolver));
@@ -141,19 +144,23 @@ public class HeavyIDE {
 		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setRightComponent(splitPane_1);
 		
-		JScrollPane editorScrollPane = new JScrollPane();
+		RTextScrollPane editorScrollPane = new RTextScrollPane();
 		splitPane_1.setLeftComponent(editorScrollPane);
 		
 		//set syntax kit
 		jsyntaxpane.DefaultSyntaxKit.initKit();
 		
-		editorPane = new JEditorPane();
-		editorScrollPane.setViewportView(editorPane);
+		editorPane = new RSyntaxTextArea();
+		editorPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		editorPane.setCodeFoldingEnabled(true);
+		editorPane.setAntiAliasingEnabled(true);
 		//set to edit java by default
 		//editorPane.setEditorKit();
-		jsyntaxpane.DefaultSyntaxKit.initKit();
-		editorPane.setContentType("text/java");
 		editorPane.setText("public static void main(String[] args) {\n}");
+		
+
+		editorScrollPane.add(editorPane);
+		editorScrollPane.setFoldIndicatorEnabled(true);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
 		splitPane_1.setRightComponent(scrollPane_2);

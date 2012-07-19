@@ -54,10 +54,6 @@ public class Activator implements BundleActivator, Runnable {
 		ResourceResolver resourceResolver = null;// =
 		try {
 			if (resourceResolverFactory != null){
-				/*resourceResolver = resolverFactory.getAdministrativeResourceResolver(new HashMap<String, Object>(){{
-					put(ResourceResolverFactory.USER, "admin");
-					put(ResourceResolverFactory.PASSWORD,"admin");
-				}});*/
 				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
 			} else {
 				
@@ -66,7 +62,7 @@ public class Activator implements BundleActivator, Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		frame = new HeavyIDE(resourceResolver).frmJcrExploder;
+		frame = new ExplorerIDE(resourceResolver).frmJcrExploder;
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
