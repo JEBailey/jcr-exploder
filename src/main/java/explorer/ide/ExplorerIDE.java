@@ -144,11 +144,7 @@ public class ExplorerIDE {
 		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setRightComponent(splitPane_1);
 		
-		RTextScrollPane editorScrollPane = new RTextScrollPane();
-		splitPane_1.setLeftComponent(editorScrollPane);
 		
-		//set syntax kit
-		jsyntaxpane.DefaultSyntaxKit.initKit();
 		
 		editorPane = new RSyntaxTextArea();
 		editorPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -158,9 +154,8 @@ public class ExplorerIDE {
 		//editorPane.setEditorKit();
 		editorPane.setText("public static void main(String[] args) {\n}");
 		
-
-		editorScrollPane.add(editorPane);
-		editorScrollPane.setFoldIndicatorEnabled(true);
+		RTextScrollPane editorScrollPane = new RTextScrollPane(editorPane);
+		splitPane_1.setLeftComponent(editorScrollPane);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
 		splitPane_1.setRightComponent(scrollPane_2);

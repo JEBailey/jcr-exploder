@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>swing.explorer</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<groupId>jcr.exploder</groupId>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<properties>
 		<project.sourceEncoding>UTF-8</project.sourceEncoding>
@@ -80,7 +80,7 @@
 						<Bundle-Activator>explorer.ide.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-ClassPath>.,lib/jsyntaxpane-0.9.4.jar</Bundle-ClassPath>
+						<Bundle-ClassPath>.,lib/rsyntaxtextarea-2.0.2.jar</Bundle-ClassPath>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
 						<!-- Inserting content into the JCR and installing some files on the 
 							server with your bundle. Sling-Initial-Content The first line will overwrite 
@@ -192,7 +192,8 @@
 			<groupId>com.fifesoft</groupId>
 			<artifactId>rsyntaxtextarea</artifactId>
 			<version>2.0.2</version>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
-	<artifactId>swing.explorer</artifactId>
+	<artifactId>jcr.exploder</artifactId>
 </project>
