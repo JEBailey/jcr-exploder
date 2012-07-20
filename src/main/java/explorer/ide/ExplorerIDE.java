@@ -119,6 +119,8 @@ public class ExplorerIDE {
 		}
 		editorTextArea.setText(reply);
 		editorTextArea.setCaretPosition(0);
+		//custom set
+		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
 	}
 	
 	
