@@ -10,6 +10,7 @@ example
 installation
 ============
 The available jar in the download section is a bundle.
+
 1. Download
 2. Go to your OSGi system console
 3. Select "update/install"
