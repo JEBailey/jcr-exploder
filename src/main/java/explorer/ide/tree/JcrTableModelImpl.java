@@ -7,7 +7,10 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.swing.table.AbstractTableModel;
+
+import org.omg.CORBA.portable.ValueInputStream;
 
 @SuppressWarnings("serial")
 public class JcrTableModelImpl extends AbstractTableModel {
@@ -55,7 +58,15 @@ public class JcrTableModelImpl extends AbstractTableModel {
 					return "binary";
 				} else {
 					if (prop.isMultiple()){
-						reply = Arrays.deepToString(prop.getValues());
+						int i = 0;
+						reply = "[";
+						for (Value value:prop.getValues()){
+							if (i++ > 0){
+								reply += ", ";
+							}
+							reply += value.getString();
+						}
+						reply += "]";
 					} else {
 						reply = prop.getString();
 					}

@@ -13,12 +13,19 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import explorer.ide.tree.JcrTreeCellRenderer;
 
 public class Activator implements BundleActivator, Runnable {
 
 	@Reference
 	private ResourceResolverFactory resourceResolverFactory;
 
+	private static final Logger log = LoggerFactory
+			.getLogger(JcrTreeCellRenderer.class);
+	
 	private JFrame frame;
 	private BundleContext context;
 
@@ -26,6 +33,9 @@ public class Activator implements BundleActivator, Runnable {
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		ServiceReference factory = context.getServiceReference(ResourceResolverFactory.class.getName());
+		if (factory == null){
+			log.error("unable to obtain service reference factory");
+		}
 		this.resourceResolverFactory = (ResourceResolverFactory) context.getService(factory);
 		if (SwingUtilities.isEventDispatchThread()) {
 			run();
@@ -33,7 +43,8 @@ public class Activator implements BundleActivator, Runnable {
 			try {
 				javax.swing.SwingUtilities.invokeAndWait(this);
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				log.error("non event dispatch thread errored");
+				throw ex;
 			}
 		}
 	}
@@ -57,11 +68,10 @@ public class Activator implements BundleActivator, Runnable {
 			if (resourceResolverFactory != null){
 				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
 			} else {
-				
+				log.error("attempting to run with a null resource resolver factory");
 			}
 		} catch (Throwable e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			log.error(e1.getLocalizedMessage());
 		}
 		frame = new ExplorerIDE(resourceResolver).frmJcrExploder;
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -71,7 +81,7 @@ public class Activator implements BundleActivator, Runnable {
 					//shutdown current bundle
 					context.getBundle().stop();
 				} catch (BundleException e) {
-					e.printStackTrace();
+					log.error("problem shutting down");
 				}
 			}
 		});

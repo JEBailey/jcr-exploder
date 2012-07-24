@@ -164,6 +164,7 @@ public class ExplorerIDE {
 		splitPane_1.setRightComponent(scrollPane_2);
 		
 		table = new JTable();
+		table.setFocusable(false);
 		table.setIntercellSpacing(new Dimension(0, 1));
 		table.setBounds(new Rectangle(1, 1, 1, 1));
 		table.setShowVerticalLines(false);

@@ -29,16 +29,11 @@ public class JcrTreeCellRenderer extends DefaultTreeCellRenderer {
 		Type type = Type.file;
 		if (value != null && value instanceof Node) {
 			Node node = (Node) value;
-			String propertyString;
-			try {
-				Property prop = node.getProperty("jcr:primaryType");
-				propertyString = prop.getString();
-				
-				if (propertyString.endsWith("Folder")
-						|| propertyString.endsWith("folder")) {
+			try {				
+				if (node.isNodeType("nt:folder")) {
 					type = expanded ? Type.folder_open : Type.folder;
-				} else if (propertyString.endsWith("nt:file")){
-					prop = node.getNode("jcr:content").getProperty("jcr:mimeType");
+				} else if (node.isNodeType("nt:file")){
+					Property prop = node.getProperty("jcr:content/jcr:mimeType");
 					if (prop != null ){
 						String[] mime = prop.getString().split("/");
 						Type base = getType(mime[0]);
@@ -52,7 +47,7 @@ public class JcrTreeCellRenderer extends DefaultTreeCellRenderer {
 							type = base;
 						}
 					}
-				} else if (propertyString.equals("nt:unstructured")){
+				} else if (node.isNodeType("nt:unstructured")){
 					type = Type.node_select_child;
 				}
 
@@ -60,9 +55,7 @@ public class JcrTreeCellRenderer extends DefaultTreeCellRenderer {
 				log.error(e.getMessage());
 			}
 		}
-		
 		setIcon(IconCache.getIcon(type));
-
 		return this;
 	}
 	
