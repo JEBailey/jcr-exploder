@@ -148,7 +148,6 @@ public class ExplorerIDE {
 		
 		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
 		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		editorTextArea.setCodeFoldingEnabled(true);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
 		//set to edit java by default

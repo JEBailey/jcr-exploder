@@ -1,5 +1,7 @@
 package explorer.ide.tree;
 
+import java.util.Arrays;
+
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
@@ -44,12 +46,19 @@ public class JcrTableModelImpl extends AbstractTableModel {
 				break;
 			case 1:
 				reply = PropertyType.nameFromValue(prop.getType());
+				if (prop.isMultiple()){
+					reply += "[]";
+				}
 				break;
 			case 2:
 				if (prop.getType() == PropertyType.BINARY){
 					return "binary";
 				} else {
-					reply = prop.getString();
+					if (prop.isMultiple()){
+						reply = Arrays.deepToString(prop.getValues());
+					} else {
+						reply = prop.getString();
+					}
 				}
 			}
 			

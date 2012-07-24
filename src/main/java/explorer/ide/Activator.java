@@ -45,6 +45,7 @@ public class Activator implements BundleActivator, Runnable {
 			public void run() {
 				m_frame.setVisible(false);
 				m_frame.dispose();
+				frame = null;
 			}
 		});
 	}
