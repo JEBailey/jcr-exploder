@@ -12,6 +12,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -97,12 +98,11 @@ public class ExplorerIDE {
 		Property prop = null;
 		String reply = "";
 		try {
-			prop = node.getProperty("jcr:primaryType");
-			if (prop.getString().endsWith("nt:file")){
+			if (node.isNodeType("nt:file")){
 				prop = node.getProperty("jcr:content/jcr:mimeType");
-				if (prop.getString().contains("text")){
-					prop = node.getProperty("jcr:content/jcr:data");
-					Binary binary = prop.getBinary();
+				if (prop.getString().contains("text") || prop.getString().contains("application")){
+					Property prop2 = node.getProperty("jcr:content/jcr:data");
+					Binary binary = prop2.getBinary();
 					byte[] temp = new byte[(int)binary.getSize()];
 					binary.read(temp, 0);
 					reply = new String(temp);
@@ -119,8 +119,18 @@ public class ExplorerIDE {
 		}
 		editorTextArea.setText(reply);
 		editorTextArea.setCaretPosition(0);
+		String syntax = null;
+		if (prop != null){
+			try {
+				syntax = prop.getString();
+				syntax = syntax.replace("application/","text/");
+			} catch (ValueFormatException e) {
+			} catch (RepositoryException e) {
+
+			}
+		}
 		//custom set
-		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+		editorTextArea.setSyntaxEditingStyle(syntax);
 	}
 	
 	
