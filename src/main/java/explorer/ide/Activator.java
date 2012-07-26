@@ -86,6 +86,7 @@ public class Activator implements BundleActivator, Runnable {
 			}
 		});
 		frame.setVisible(true);
+		log.info("application is running");
 	}
 
 }

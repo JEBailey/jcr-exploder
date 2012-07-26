@@ -50,6 +50,9 @@ public class JcrNodeTreeModel implements TreeModel {
 	public int getChildCount(Object parent) {
 		checkLive();
 		try {
+			if (((Node)parent).isNodeType("nt:file")){
+				return 0;
+			}
 			int reply = (int)((Node)parent).getNodes().getSize();
 			return reply < 1 ? 0 : reply ;
 		} catch (RepositoryException e) {
@@ -61,13 +64,10 @@ public class JcrNodeTreeModel implements TreeModel {
 	public boolean isLeaf(Object node) {
 		checkLive();
 			try {
-				int i = 0;
-				NodeIterator iter = ((Node)node).getNodes();
-				while(iter.hasNext()){
-					++i;
-					iter.next();
+				if (((Node)node).isNodeType("nt:file")){
+					return true;
 				}
-				return i < 1;
+				return !((Node)node).getNodes().hasNext();
 			} catch (RepositoryException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

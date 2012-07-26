@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.jcr.Binary;
@@ -38,6 +41,7 @@ import explorer.ide.tree.JcrJTree;
 import explorer.ide.tree.JcrNodeTreeModel;
 import explorer.ide.tree.JcrTableModelImpl;
 import explorer.ide.tree.JcrTreeCellRenderer;
+import explorer.ide.ui.TreeMenu;
 
 public class ExplorerIDE {
 
@@ -76,8 +80,13 @@ public class ExplorerIDE {
 	}
 	
 	public ExplorerIDE(ResourceResolver resourceResolver) {
-		initialize();
 		this.resourceResolver = resourceResolver;
+		initialize();
+		configureTree();
+		table.setModel(model);
+	}
+	
+	private void configureTree(){
 		tree.setModel(new JcrNodeTreeModel(resourceResolver));
 		tree.setCellRenderer(new JcrTreeCellRenderer());
 		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
@@ -91,8 +100,9 @@ public class ExplorerIDE {
 			}
 			
 		});
-		table.setModel(model);
+		
 	}
+	
 	
 	private void updateEditorPane(Node node){
 		Property prop = null;
@@ -192,7 +202,7 @@ public class ExplorerIDE {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 		
-		tree = new JcrJTree();
+		tree = new JcrJTree(resourceResolver);
 		tree.setToolTipText("");
 		tree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("JTree") {
