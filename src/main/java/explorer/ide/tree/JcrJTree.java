@@ -6,15 +6,12 @@ import java.awt.event.MouseEvent;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import org.apache.sling.api.resource.ResourceResolver;
 
 import explorer.ide.ui.TreeMenu;
 
@@ -83,6 +80,8 @@ public class JcrJTree extends JTree {
 			}
 		});
 	}
+	
+	
 
 	@Override
 	public String convertValueToText(Object value, boolean selected,

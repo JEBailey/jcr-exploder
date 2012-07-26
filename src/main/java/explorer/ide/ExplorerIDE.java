@@ -81,6 +81,7 @@ public class ExplorerIDE {
 	}
 	
 	public ExplorerIDE(ResourceResolver resourceResolver) {
+		Model.setResourceResolver(resourceResolver);
 		this.resourceResolver = resourceResolver;
 		initialize();
 		configureTree();
