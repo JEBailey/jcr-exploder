@@ -206,7 +206,7 @@ public class ExplorerIDE {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 		
-		tree = new JcrJTree(resourceResolver);
+		tree = new JcrJTree();
 		tree.setToolTipText("");
 		tree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("JTree") {

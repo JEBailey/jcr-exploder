@@ -27,14 +27,13 @@ public class JcrJTree extends JTree {
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
 	}
 
-	private ResourceResolver resourceResolver;
-	private Session session;
+	public JcrJTree(TreeModel newModel) {
+		super(newModel);
+		init();
+	}
 
-	public JcrJTree(ResourceResolver resourceResolver) {
+	public JcrJTree() {
 		super();
-		setModel(new JcrNodeTreeModel(resourceResolver));
-		this.resourceResolver = resourceResolver;
-		this.session = this.resourceResolver.adaptTo(Session.class);
 		init();
 	}
 
