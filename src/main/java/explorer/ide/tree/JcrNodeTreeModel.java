@@ -12,16 +12,14 @@ import org.apache.sling.api.resource.ResourceResolver;
 
 public class JcrNodeTreeModel implements TreeModel {
 
-	
-	
 	private ResourceResolver resourceResolver;
 	private Session session;
 
-	public JcrNodeTreeModel(ResourceResolver resourceResolver){
+	public JcrNodeTreeModel(ResourceResolver resourceResolver) {
 		this.resourceResolver = resourceResolver;
 		this.session = this.resourceResolver.adaptTo(Session.class);
 	}
-	
+
 	@Override
 	public Object getRoot() {
 		checkLive();
@@ -37,7 +35,7 @@ public class JcrNodeTreeModel implements TreeModel {
 		checkLive();
 		NodeIterator ni;
 		try {
-			ni = ((Node)parent).getNodes();
+			ni = ((Node) parent).getNodes();
 			ni.skip(index);
 			return ni.next();
 		} catch (RepositoryException e) {
@@ -50,11 +48,11 @@ public class JcrNodeTreeModel implements TreeModel {
 	public int getChildCount(Object parent) {
 		checkLive();
 		try {
-			if (((Node)parent).isNodeType("nt:file")){
+			if (((Node) parent).isNodeType("nt:file")) {
 				return 0;
 			}
-			int reply = (int)((Node)parent).getNodes().getSize();
-			return reply < 1 ? 0 : reply ;
+			int reply = (int) ((Node) parent).getNodes().getSize();
+			return reply < 1 ? 0 : reply;
 		} catch (RepositoryException e) {
 			return 0;
 		}
@@ -63,16 +61,15 @@ public class JcrNodeTreeModel implements TreeModel {
 	@Override
 	public boolean isLeaf(Object node) {
 		checkLive();
-			try {
-				if (((Node)node).isNodeType("nt:file")){
-					return true;
-				}
-				return !((Node)node).getNodes().hasNext();
-			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return true;
+		try {
+			Node currentNode = (Node) node;
+			return currentNode.isNodeType("nt:file") ? true : !currentNode
+					.getNodes().hasNext();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	@Override
@@ -98,9 +95,9 @@ public class JcrNodeTreeModel implements TreeModel {
 		// TODO Auto-generated method stub
 
 	}
-	
-	private void checkLive(){
-		if (!session.isLive()){
+
+	private void checkLive() {
+		if (!session.isLive()) {
 			session.logout();
 			session = resourceResolver.adaptTo(Session.class);
 		}

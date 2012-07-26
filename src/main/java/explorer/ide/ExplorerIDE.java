@@ -42,6 +42,7 @@ import explorer.ide.tree.JcrNodeTreeModel;
 import explorer.ide.tree.JcrTableModelImpl;
 import explorer.ide.tree.JcrTreeCellRenderer;
 import explorer.ide.ui.TreeMenu;
+import javax.swing.JTabbedPane;
 
 public class ExplorerIDE {
 
@@ -166,22 +167,9 @@ public class ExplorerIDE {
 		splitPane.setRightComponent(splitPane_1);
 		
 		
-		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
-		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		editorTextArea.setAntiAliasingEnabled(true);
-		editorTextArea.setEditable(true);
-		//set to edit java by default
-		//editorPane.setEditorKit();
 		
-		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
-		splitPane_1.setLeftComponent(editorScrollPane);
-		
-		editorTextArea.setText("public static void main(String[] args) {\n}");
-		
-		
-		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		splitPane_1.setRightComponent(scrollPane_2);
+		JScrollPane propertiesScrollPane = new JScrollPane();
+		splitPane_1.setRightComponent(propertiesScrollPane);
 		
 		table = new JTable();
 		table.setFocusable(false);
@@ -196,7 +184,23 @@ public class ExplorerIDE {
 			}, headers
 		));
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPane_2.setViewportView(table);
+		propertiesScrollPane.setViewportView(table);
+		
+		JTabbedPane editorTab = new JTabbedPane(JTabbedPane.TOP);
+		splitPane_1.setLeftComponent(editorTab);
+		
+		
+		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
+		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		editorTextArea.setAntiAliasingEnabled(true);
+		editorTextArea.setEditable(true);
+		//set to edit java by default
+		//editorPane.setEditorKit();
+		
+		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
+		editorTab.addTab("New tab", null, editorScrollPane, null);
+		
+		editorTextArea.setText("public static void main(String[] args) {\n}");
 		splitPane_1.setDividerLocation(400);
 		
 		JScrollPane scrollPane = new JScrollPane();
