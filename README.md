@@ -7,7 +7,7 @@ example
 
 ![example screen](/JEBailey/jcr-exploder/raw/master/images/example.png)
 
-installation
+Installation
 ============
 The available jar in the download section is a bundle.
 
@@ -16,3 +16,8 @@ The available jar in the download section is a bundle.
 3. Select "update/install"
 4. Select the jar file and upload
 5. if the UI doesn't immediately start, check the bundle and click run.
+
+Dependencies
+============
+org.apache.jackrabbit.jackrabbit-jcr-commons (already in sling.. for some reason left out of CQ5)
+-- Download here 
