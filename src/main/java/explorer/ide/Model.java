@@ -22,6 +22,7 @@ public class Model {
 
 	public static void setResourceResolver(ResourceResolver resourceResolver) {
 		Model.resourceResolver = resourceResolver;
+		Model.session = resourceResolver.adaptTo(Session.class);
 	}
 
 	public static Session getSession() {

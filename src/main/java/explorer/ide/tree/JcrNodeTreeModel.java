@@ -1,9 +1,17 @@
 package explorer.ide.tree;
 
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.swing.event.EventListenerList;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -14,6 +22,7 @@ public class JcrNodeTreeModel implements TreeModel {
 
 	private ResourceResolver resourceResolver;
 	private Session session;
+	private EventListenerList list = new EventListenerList();
 
 	public JcrNodeTreeModel(ResourceResolver resourceResolver) {
 		this.resourceResolver = resourceResolver;
@@ -86,14 +95,13 @@ public class JcrNodeTreeModel implements TreeModel {
 
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
-		// TODO Auto-generated method stub
+		list.add(TreeModelListener.class, l);
 
 	}
 
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
-		// TODO Auto-generated method stub
-
+		list.remove(TreeModelListener.class, l);
 	}
 
 	private void checkLive() {
@@ -101,6 +109,39 @@ public class JcrNodeTreeModel implements TreeModel {
 			session.logout();
 			session = resourceResolver.adaptTo(Session.class);
 		}
+	}
+	
+	public void updateNode(Node node){
+		List<Node>nodes = new LinkedList<Node>();
+		try {
+			Node child = node;
+			while (true) {
+				nodes.add(child);
+				child = child.getParent();
+			} 
+		} catch (RepositoryException e1) {
+			// swallow
+		}
+		
+		Node[] paths = paths(nodes);
+		
+		 // Guaranteed to return a non-null array
+		TreeModelListener[] listeners = list.getListeners(TreeModelListener.class);//List(ListenerList();
+        TreeModelEvent e =  new TreeModelEvent(node, paths);
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (TreeModelListener listener:listeners){
+        	listener.treeStructureChanged(e);     
+        }
+	}
+	
+	private Node[] paths(List<Node> nodes){
+		Node[] reply = new Node[nodes.size()];
+		int index = nodes.size();
+		while (!nodes.isEmpty()){
+			reply[--index] = nodes.remove(0);
+		}
+		return reply;
 	}
 
 }

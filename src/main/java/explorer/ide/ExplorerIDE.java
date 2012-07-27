@@ -5,9 +5,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.jcr.Binary;
@@ -22,6 +19,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
@@ -41,8 +39,8 @@ import explorer.ide.tree.JcrJTree;
 import explorer.ide.tree.JcrNodeTreeModel;
 import explorer.ide.tree.JcrTableModelImpl;
 import explorer.ide.tree.JcrTreeCellRenderer;
-import explorer.ide.ui.TreeMenu;
-import javax.swing.JTabbedPane;
+import explorer.ide.tree.JcrTreeNode;
+import explorer.ide.tree.JcrTreeNodeRenderer;
 
 public class ExplorerIDE {
 
@@ -84,18 +82,25 @@ public class ExplorerIDE {
 		Model.setResourceResolver(resourceResolver);
 		this.resourceResolver = resourceResolver;
 		initialize();
-		configureTree();
+		try {
+			configureTree();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		table.setModel(model);
 	}
 	
-	private void configureTree(){
-		tree.setModel(new JcrNodeTreeModel(resourceResolver));
-		tree.setCellRenderer(new JcrTreeCellRenderer());
+	private void configureTree() throws Exception{
+		//tree.setModel(new JcrNodeTreeModel(resourceResolver));
+		tree.setModel(new DefaultTreeModel(new JcrTreeNode(Model.getSession().getRootNode())));
+		//tree.setCellRenderer(new JcrTreeCellRenderer());
+		tree.setCellRenderer(new JcrTreeNodeRenderer());
 		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Node node = (Node)tree.getLastSelectedPathComponent();
+				Node node = ((JcrTreeNode)tree.getLastSelectedPathComponent()).getNode();
 				if (node == null) return;
 				model.updateModel(node);
 				updateEditorPane(node);
