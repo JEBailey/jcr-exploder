@@ -36,11 +36,10 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import explorer.ide.tree.JcrJTree;
-import explorer.ide.tree.JcrNodeTreeModel;
 import explorer.ide.tree.JcrTableModelImpl;
-import explorer.ide.tree.JcrTreeCellRenderer;
 import explorer.ide.tree.JcrTreeNode;
 import explorer.ide.tree.JcrTreeNodeRenderer;
+
 
 public class ExplorerIDE {
 

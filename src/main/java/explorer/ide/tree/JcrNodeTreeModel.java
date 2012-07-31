@@ -1,10 +1,8 @@
 package explorer.ide.tree;
 
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;

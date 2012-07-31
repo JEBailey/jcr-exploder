@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -71,12 +72,13 @@ public class JcrJTree extends JTree {
 							final JFileChooser fc = new JFileChooser();
 							JcrJTree tree = JcrJTree.this;
 							if (fc.showOpenDialog(tree.getParent()) == JFileChooser.APPROVE_OPTION) {
-								Node node = (Node)tree.getLastSelectedPathComponent();
+								JcrTreeNode treeNode = (JcrTreeNode)tree.getLastSelectedPathComponent();
+								Node node = treeNode.getNode();
 								try {
 									if (node.isNodeType("nt:folder")){
 										File file = fc.getSelectedFile();
-										Util.importFile(node,file);
-										((JcrNodeTreeModel)tree.getModel()).updateNode(node);
+										new Util().importFile(node,file);
+										((DefaultTreeModel)tree.getModel()).nodeChanged(treeNode);
 									} else {
 										Container comp = tree.getParent();
 										while (!(comp instanceof JFrame)){
