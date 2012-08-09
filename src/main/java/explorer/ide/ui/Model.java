@@ -1,4 +1,4 @@
-package explorer.ide;
+package explorer.ide.ui;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;

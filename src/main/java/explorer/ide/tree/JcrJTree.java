@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -20,11 +18,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import explorer.ide.ui.Util;
 
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
@@ -33,11 +28,6 @@ public class JcrJTree extends JTree {
 		// Set the magic property which makes the first click outside the popup
 		// capable of selecting tree nodes, as well as dismissing the popup.
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
-	}
-
-	public JcrJTree(TreeModel newModel) {
-		super(newModel);
-		init();
 	}
 
 	public JcrJTree() {
@@ -74,7 +64,7 @@ public class JcrJTree extends JTree {
 								try {
 									if (node.isNodeType("nt:folder")){
 										File file = fc.getSelectedFile();
-										new Util().importFile(node,file);
+										//new Util().importFile(node,file);
 										((DefaultTreeModel)tree.getModel()).nodeChanged(treeNode);
 									} else {
 										Container comp = tree.getParent();
@@ -86,16 +76,9 @@ public class JcrJTree extends JTree {
 									TreePath pathing = tree.getLeadSelectionPath();
 									Object[] nodes = pathing.getPath();
 									System.out.println(nodes);
-								} catch (RepositoryException e1) {
-									// TODO Auto-generated catch block
+								} catch (Exception e1) {
 									e1.printStackTrace();
-								} catch (FileNotFoundException e4) {
-									// TODO Auto-generated catch block
-									e4.printStackTrace();
-								} catch (IOException e4) {
-									// TODO Auto-generated catch block
-									e4.printStackTrace();
-								}
+								} 
 							}
 
 						}

@@ -1,4 +1,4 @@
-package explorer.ide.tree;
+package explorer.ide.table;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
