@@ -10,8 +10,6 @@ import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.ide.tree.JcrTreeCellRenderer;
-
 
 public class IconCache {
 
@@ -21,7 +19,7 @@ public class IconCache {
     // cache for our icons
     private static Map<Type,Icon> mIconCache= new EnumMap<Type,Icon>(Type.class);
     private static final Logger log = LoggerFactory
-			.getLogger(JcrTreeCellRenderer.class);
+			.getLogger(IconCache.class);
     /**
      * Loads an Icon for the handed (relative) name and modifier.
      * If no icon is found, null is returned.

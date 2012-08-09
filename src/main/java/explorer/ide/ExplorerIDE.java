@@ -91,9 +91,7 @@ public class ExplorerIDE {
 	}
 	
 	private void configureTree() throws Exception{
-		//tree.setModel(new JcrNodeTreeModel(resourceResolver));
 		tree.setModel(new DefaultTreeModel(new JcrTreeNode(Model.getSession().getRootNode())));
-		//tree.setCellRenderer(new JcrTreeCellRenderer());
 		tree.setCellRenderer(new JcrTreeNodeRenderer());
 		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			
@@ -199,8 +197,6 @@ public class ExplorerIDE {
 		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
-		//set to edit java by default
-		//editorPane.setEditorKit();
 		
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
 		editorTab.addTab("New tab", null, editorScrollPane, null);

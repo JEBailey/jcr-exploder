@@ -19,8 +19,6 @@ import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.ide.tree.JcrTreeCellRenderer;
-
 @Component
 public class Activator implements BundleActivator, Runnable {
 
@@ -29,7 +27,7 @@ public class Activator implements BundleActivator, Runnable {
 
 	
 	private static final Logger log = LoggerFactory
-			.getLogger(JcrTreeCellRenderer.class);
+			.getLogger(Activator.class);
 	
 	
 	private JFrame frame;
