@@ -4,12 +4,17 @@ import java.io.*;
 import java.util.Calendar;
 import javax.jcr.*;
 import org.apache.sling.commons.mime.MimeTypeService;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
-public class Util
+public class Util extends ServiceTracker
 {
 
-    public Util()
+    private static MimeTypeService mimeType;
+    
+    public Util(BundleContext context)
     {
+    	super(context,MimeTypeService.class.getName(),null);
     }
 
     public static void importFile(Node parentnode, File file)
@@ -49,5 +54,5 @@ public class Util
 
     }
 
-    public static MimeTypeService mimeType;
+
 }

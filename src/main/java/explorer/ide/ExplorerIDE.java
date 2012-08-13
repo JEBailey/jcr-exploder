@@ -2,7 +2,6 @@ package explorer.ide;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -12,6 +11,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,15 +31,20 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
 import explorer.ide.tree.JcrTreeNode;
 import explorer.ide.tree.JcrTreeNodeRenderer;
-import explorer.ide.ui.Model;
 
 
 public class ExplorerIDE {
@@ -48,23 +53,15 @@ public class ExplorerIDE {
 	
 	private RSyntaxTextArea editorTextArea;
 	
+	private BundleContext context;
+	
 	private ResourceResolver resourceResolver;
+	
+	private ResourceFactoryTracker resourceTracker;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ExplorerIDE window = new ExplorerIDE();
-					window.frmJcrExploder.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private static final Logger log = LoggerFactory
+			.getLogger(ExplorerIDE.class);
+
 	
 	String[] headers = new String[] {
 			"Name", "Type", "Value"
@@ -78,21 +75,16 @@ public class ExplorerIDE {
 		initialize();
 	}
 	
-	public ExplorerIDE(ResourceResolver resourceResolver) {
-		Model.setResourceResolver(resourceResolver);
-		this.resourceResolver = resourceResolver;
+	public ExplorerIDE(BundleContext context) {
+		this.context = context;
 		initialize();
-		try {
-			configureTree();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		table.setModel(model);
+		resourceTracker = new ResourceFactoryTracker(context);
+		resourceTracker.open();
 	}
 	
-	private void configureTree() throws Exception{
-		tree.setModel(new DefaultTreeModel(new JcrTreeNode(Model.getSession().getRootNode())));
+	
+	private void configureTree(Session session) throws Exception{
+		tree.setModel(new DefaultTreeModel(new JcrTreeNode(session.getRootNode())));
 		tree.setCellRenderer(new JcrTreeNodeRenderer());
 		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			
@@ -155,6 +147,7 @@ public class ExplorerIDE {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings("serial")
 	private void initialize() {
 		frmJcrExploder = new JFrame();
 		frmJcrExploder.setTitle("JCR Exploder");
@@ -253,6 +246,34 @@ public class ExplorerIDE {
 		frmJcrExploder.setJMenuBar(menuBar);
 	}
 	
+	
+	class ResourceFactoryTracker extends ServiceTracker{
+		
+		
+		public ResourceFactoryTracker(BundleContext context) {
+			super(context, ResourceResolverFactory.class.getName(), null);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public Object addingService(ServiceReference reference) {
+			if (resourceResolver != null){
+				return null;
+			}
+			
+			ResourceResolverFactory resourceResolverFactory = (ResourceResolverFactory)super.addingService(reference);
+			try {
+				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
+				configureTree(resourceResolver.adaptTo(Session.class));
+				table.setModel(model);
+			} catch (Exception e) {
+				log.error(e.getLocalizedMessage());
+			}
+			
+			return resourceResolverFactory;
+		}
+		
+	}
 
 
 }

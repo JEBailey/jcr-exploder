@@ -80,7 +80,7 @@ public class Activator implements BundleActivator, Runnable {
 		} catch (Throwable e1) {
 			log.error(e1.getLocalizedMessage());
 		}
-		frame = new ExplorerIDE(resourceResolver).frmJcrExploder;
+		frame = new ExplorerIDE(Activator.context).frmJcrExploder;
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
