@@ -4,15 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
-import java.io.IOException;
 
-import javax.jcr.Binary;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.ValueFormatException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -24,8 +17,6 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.CompoundBorder;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -41,10 +32,15 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import explorer.commands.FileImport;
+import explorer.commands.UpdateEditorPane;
+import explorer.commands.UpdateTableModel;
+import explorer.events.FindFiles;
+import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
-import explorer.ide.tree.JcrTreeNode;
-import explorer.ide.tree.JcrTreeNodeRenderer;
+import flack.commands.MultipleCommand;
+import flack.control.EventController;
 
 
 public class ExplorerIDE {
@@ -58,14 +54,12 @@ public class ExplorerIDE {
 	private ResourceResolver resourceResolver;
 	
 	private ResourceFactoryTracker resourceTracker;
+	
+	@SuppressWarnings("unused")
+	private EventController controller;
 
 	private static final Logger log = LoggerFactory
 			.getLogger(ExplorerIDE.class);
-
-	
-	String[] headers = new String[] {
-			"Name", "Type", "Value"
-		};
 
 	JcrTableModelImpl model = new JcrTableModelImpl();
 	/**
@@ -78,68 +72,22 @@ public class ExplorerIDE {
 	public ExplorerIDE(BundleContext context) {
 		this.context = context;
 		initialize();
-		resourceTracker = new ResourceFactoryTracker(context);
-		resourceTracker.open();
-	}
-	
-	
-	private void configureTree(Session session) throws Exception{
-		tree.setModel(new DefaultTreeModel(new JcrTreeNode(session.getRootNode())));
-		tree.setCellRenderer(new JcrTreeNodeRenderer());
-		tree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-			
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				Node node = ((JcrTreeNode)tree.getLastSelectedPathComponent()).getNode();
-				if (node == null) return;
-				model.updateModel(node);
-				updateEditorPane(node);
-			}
-			
-		});
+		bundleInitialize();
 		
 	}
 	
 	
-	private void updateEditorPane(Node node){
-		Property prop = null;
-		String reply = "";
-		try {
-			if (node.isNodeType("nt:file")){
-				prop = node.getProperty("jcr:content/jcr:mimeType");
-				if (prop.getString().contains("text") || prop.getString().contains("application")){
-					Property prop2 = node.getProperty("jcr:content/jcr:data");
-					Binary binary = prop2.getBinary();
-					byte[] temp = new byte[(int)binary.getSize()];
-					binary.read(temp, 0);
-					reply = new String(temp);
-				}
-			} else {
-				reply = "non content node";
-			}
-		} catch (PathNotFoundException e) {
-			reply = "non-conforming node";
-		} catch (RepositoryException e) {
-			reply = "problem occured in repository";
-		} catch (IOException e) {
-			reply = "problem reading stream";
-		}
-		editorTextArea.setText(reply);
-		editorTextArea.setCaretPosition(0);
-		String syntax = null;
-		if (prop != null){
-			try {
-				syntax = prop.getString();
-				syntax = syntax.replace("application/","text/");
-			} catch (ValueFormatException e) {
-			} catch (RepositoryException e) {
-
-			}
-		}
-		//custom set
-		editorTextArea.setSyntaxEditingStyle(syntax);
+	private void bundleInitialize() {
+		controller = new EventController(){{
+			addCommand(NodeSelected.class, new MultipleCommand(){{
+				add(new UpdateTableModel(model));
+				add(new UpdateEditorPane(editorTextArea));
+			}});
+			addCommand(FindFiles.class, new FileImport(context));
+		}};
+		resourceTracker = new ResourceFactoryTracker(context);
+		resourceTracker.open();
 	}
-	
 	
 	JTree tree;
 	private JTable table;
@@ -173,6 +121,9 @@ public class ExplorerIDE {
 		table.setIntercellSpacing(new Dimension(0, 1));
 		table.setBounds(new Rectangle(1, 1, 1, 1));
 		table.setShowVerticalLines(false);
+		String[] headers = new String[] {
+				"Name", "Type", "Value"
+			};
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"jcr:contentType", "String", "nt:resource"},
@@ -264,7 +215,7 @@ public class ExplorerIDE {
 			ResourceResolverFactory resourceResolverFactory = (ResourceResolverFactory)super.addingService(reference);
 			try {
 				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-				configureTree(resourceResolver.adaptTo(Session.class));
+				((JcrJTree)tree).configureTree(resourceResolver.adaptTo(Session.class));
 				table.setModel(model);
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());

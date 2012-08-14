@@ -10,6 +10,7 @@ import java.io.File;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -17,9 +18,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import explorer.events.FindFiles;
+import explorer.events.NodeSelected;
+import flack.control.Dispatcher;
 
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
@@ -55,32 +62,8 @@ public class JcrJTree extends JTree {
 
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							//Session session = Model.getSession();
-							final JFileChooser fc = new JFileChooser();
-							JcrJTree tree = JcrJTree.this;
-							if (fc.showOpenDialog(tree.getParent()) == JFileChooser.APPROVE_OPTION) {
-								JcrTreeNode treeNode = (JcrTreeNode)tree.getLastSelectedPathComponent();
-								Node node = treeNode.getNode();
-								try {
-									if (node.isNodeType("nt:folder")){
-										File file = fc.getSelectedFile();
-										//new Util().importFile(node,file);
-										((DefaultTreeModel)tree.getModel()).nodeChanged(treeNode);
-									} else {
-										Container comp = tree.getParent();
-										while (!(comp instanceof JFrame)){
-											comp = comp.getParent();
-										}
-										JOptionPane.showMessageDialog(comp, "unknown "+node.toString());
-									}
-									TreePath pathing = tree.getLeadSelectionPath();
-									Object[] nodes = pathing.getPath();
-									System.out.println(nodes);
-								} catch (Exception e1) {
-									e1.printStackTrace();
-								} 
-							}
-
+							JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
+							Dispatcher.getInstance().dispatchEvent(new FindFiles(this, treeNode));
 						}
 					});
 				}
@@ -112,7 +95,7 @@ public class JcrJTree extends JTree {
 
 			/**
 			 * Fix for right click not selecting tree nodes - We want to
-			 * implement the following behaviour which matches windows explorer:
+			 * implement the following behavior which matches windows explorer:
 			 * If the item under the click is not already selected, clear the
 			 * current selections and select the item, prior to showing the
 			 * popup. If the item under the click is already selected, keep the
@@ -142,6 +125,22 @@ public class JcrJTree extends JTree {
 		}
 		return super.convertValueToText(value, selected, expanded, leaf, row,
 				hasFocus);
+	}
+	
+	public void configureTree(Session session) throws Exception{
+		setModel(new DefaultTreeModel(new JcrTreeNode(session.getRootNode())));
+		setCellRenderer(new JcrTreeNodeRenderer());
+		getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+			
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				Node node = ((JcrTreeNode)getLastSelectedPathComponent()).getNode();
+				if (node == null) return;
+				Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, node));
+			}
+			
+		});
+		
 	}
 
 }

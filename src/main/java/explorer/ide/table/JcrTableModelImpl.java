@@ -11,7 +11,7 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 public class JcrTableModelImpl extends AbstractTableModel {
 
-	private Node node;
+	public Node node;
 	
 	private String[] headers = new String[] {
 			"Name", "Type", "Value"
@@ -78,12 +78,5 @@ public class JcrTableModelImpl extends AbstractTableModel {
 	public String getColumnName(int column) {
 		return headers[column];
 	}
-	
-	public void updateModel(Node node){
-		this.node = node;
-		fireTableDataChanged();
-	}
-	
-	
 
 }
