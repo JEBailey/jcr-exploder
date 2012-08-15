@@ -33,9 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.commands.FileImport;
+import explorer.commands.RemoveNodes;
 import explorer.commands.UpdateEditorPane;
 import explorer.commands.UpdateTableModel;
 import explorer.commands.UpdateTree;
+import explorer.events.Delete;
 import explorer.events.FindFiles;
 import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
@@ -75,7 +77,6 @@ public class ExplorerIDE {
 		this.context = context;
 		initialize();
 		bundleInitialize();
-		
 	}
 	
 	
@@ -87,6 +88,7 @@ public class ExplorerIDE {
 			}});
 			addCommand(FindFiles.class, new FileImport(context));
 			addCommand(NodeModified.class, new UpdateTree(tree));
+			addCommand(Delete.class, new RemoveNodes());
 		}};
 		resourceTracker = new ResourceFactoryTracker(context);
 		resourceTracker.open();

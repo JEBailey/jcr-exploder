@@ -25,6 +25,7 @@ public class UpdateTree implements Command {
 		model.reload(treeNode);
 		tree.treeDidChange();
 		tree.invalidate();
+		tree.expandPath(null);
 		System.out.print("updating model");
 	}
 

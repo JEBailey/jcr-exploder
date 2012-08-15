@@ -1,20 +1,15 @@
 package explorer.ide.tree;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
@@ -24,6 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import explorer.events.Delete;
 import explorer.events.FindFiles;
 import explorer.events.NodeSelected;
 import flack.control.Dispatcher;
@@ -48,16 +44,17 @@ public class JcrJTree extends JTree {
 		addMouseListener(new MouseAdapter() {
 
 			private JPopupMenu menu = new JPopupMenu() {
-				// here
+				
 				JMenuItem mntmCopy = new JMenuItem("Copy");
-
 				JMenuItem mntmPaste = new JMenuItem("Paste");
+				JMenuItem mntmDelete = new JMenuItem("Delete");
 				final JMenuItem mntmImportFiles = new JMenuItem("Import Files");
 				
 				{
 					add(mntmCopy);
 					add(mntmPaste);
 					add(mntmImportFiles);
+					add(mntmDelete);
 					mntmImportFiles.addActionListener(new ActionListener() {
 
 						@Override
@@ -66,6 +63,16 @@ public class JcrJTree extends JTree {
 							Dispatcher.getInstance().dispatchEvent(new FindFiles(this, treeNode));
 						}
 					});
+					
+					mntmDelete.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
+							Dispatcher.getInstance().dispatchEvent(new Delete(this, treeNode));
+						}
+					});
+								
 				}
 
 			};
@@ -134,9 +141,12 @@ public class JcrJTree extends JTree {
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Node node = ((JcrTreeNode)getLastSelectedPathComponent()).getNode();
-				if (node == null) return;
-				Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, node));
+				JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
+				if (treeNode != null){
+					Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, treeNode.getNode()));
+					// TODO: handle a null selection which occurs when a selection is deleted.
+					// this should be passed into the handler which then displays a default view
+				}
 			}
 			
 		});

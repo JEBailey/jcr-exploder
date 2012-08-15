@@ -5,10 +5,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.JFileChooser;
-import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.sling.commons.mime.MimeTypeService;
 import org.osgi.framework.BundleContext;
@@ -66,7 +66,7 @@ public class FileImport implements Command {
 		Node resNode = fileNode.addNode("jcr:content", "nt:resource");
 		resNode.setProperty("jcr:mimeType", mimeTypes);
 		resNode.setProperty("jcr:encoding", "");
-		javax.jcr.Binary binary = parentnode.getSession().getValueFactory()
+		Binary binary = parentnode.getSession().getValueFactory()
 				.createBinary(new FileInputStream(file));
 		resNode.setProperty("jcr:data", binary);
 		Calendar lastModified = Calendar.getInstance();
