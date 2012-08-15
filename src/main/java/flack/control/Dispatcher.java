@@ -46,7 +46,7 @@ public class Dispatcher {
 	}
 
 	/**
-	 * Dispatches a event.
+	 * Dispatches an event.
 	 */
 	public boolean dispatchEvent(Event event) {
 		List<EventController> listeners = handlers.get(event.getClass());

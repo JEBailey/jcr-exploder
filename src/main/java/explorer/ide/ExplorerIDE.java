@@ -35,7 +35,9 @@ import org.slf4j.LoggerFactory;
 import explorer.commands.FileImport;
 import explorer.commands.UpdateEditorPane;
 import explorer.commands.UpdateTableModel;
+import explorer.commands.UpdateTree;
 import explorer.events.FindFiles;
+import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
@@ -84,6 +86,7 @@ public class ExplorerIDE {
 				add(new UpdateEditorPane(editorTextArea));
 			}});
 			addCommand(FindFiles.class, new FileImport(context));
+			addCommand(NodeModified.class, new UpdateTree(tree));
 		}};
 		resourceTracker = new ResourceFactoryTracker(context);
 		resourceTracker.open();

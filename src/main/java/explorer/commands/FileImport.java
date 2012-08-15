@@ -8,6 +8,7 @@ import java.util.Calendar;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.JFileChooser;
+import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.sling.commons.mime.MimeTypeService;
 import org.osgi.framework.BundleContext;
@@ -15,7 +16,6 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import explorer.events.NodeModified;
 import explorer.ide.tree.JcrTreeNode;
-import flack.commands.ChainedCommand;
 import flack.commands.Command;
 import flack.control.Dispatcher;
 import flack.control.Event;
@@ -37,7 +37,7 @@ public class FileImport implements Command {
 	public void process(Event event) {
 		JcrTreeNode treeNode = (JcrTreeNode)event.getData();
 		final JFileChooser fc = new JFileChooser();
-		
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {	
 			Node node = treeNode.getNode();
 			try {
@@ -45,7 +45,9 @@ public class FileImport implements Command {
 					File file = fc.getSelectedFile();
 					if (file.isFile()){
 						importFile(node,file);
-						dispatcher.dispatchEvent(new NodeModified(null, node));
+						dispatcher.dispatchEvent(new NodeModified(event.getSource(), treeNode));
+					} else if (file.isDirectory()){
+						importFolder(node, file);
 					}
 				}
 			} catch (Exception e1) {
