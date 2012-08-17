@@ -15,12 +15,13 @@ public class RemoveNodes implements Command {
 	@Override
 	public void process(Event event) {
 		JcrTreeNode treeNode = (JcrTreeNode)event.getData();
+		JcrTreeNode parentTreeNode = (JcrTreeNode)treeNode.getParent();
 		Node node = treeNode.getNode();
 		try {
 			Node parentNode = node.getParent();
 			node.remove();
 			parentNode.getSession().save();
-			dispatcher.dispatchEvent(new NodeModified(event.getSource(), treeNode));
+			dispatcher.asynchEvent(new NodeModified(event.getSource(), parentTreeNode));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

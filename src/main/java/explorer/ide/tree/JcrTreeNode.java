@@ -8,7 +8,8 @@ import javax.jcr.RepositoryException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-public class JcrTreeNode implements TreeNode {
+@SuppressWarnings("serial")
+public class JcrTreeNode extends DefaultMutableTreeNode {
 	
 	private Node currentNode;
 
@@ -21,17 +22,15 @@ public class JcrTreeNode implements TreeNode {
 			NodeIterator iterator = currentNode.getNodes();
 			iterator.skip(childIndex);
 			Node child = iterator.nextNode();
-			System.out.println(currentNode.getName() + " returning "+ child.getPath());
 			return new JcrTreeNode(child);
-		} catch (RepositoryException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			//e.printStackTrace();
 		}
 		return null;
 	}
 
 	public int getChildCount() {
 		try {
-			System.out.println(currentNode.getName() + " has " + currentNode.getNodes().getSize());
 			return (int) currentNode.getNodes().getSize();
 		} catch (RepositoryException e) {
 			return 0;
@@ -47,7 +46,8 @@ public class JcrTreeNode implements TreeNode {
 	}
 
 	public int getIndex(TreeNode node) {
-		int reply = 0;
+		int reply = -1;
+
 		try {
 			Node childNode = ((JcrTreeNode) node).getNode();
 			NodeIterator iter = currentNode.getNodes();
@@ -60,7 +60,6 @@ public class JcrTreeNode implements TreeNode {
 				++index;
 			}
 			reply = index;
-			System.out.println(childNode.getName() + " child of "+ currentNode.getName() +" has index of " + reply);
 		} catch (RepositoryException repositoryexception) {
 			repositoryexception.printStackTrace();
 		}
@@ -111,4 +110,31 @@ public class JcrTreeNode implements TreeNode {
 		return currentNode;
 	}
 
+	@Override
+	public int hashCode() {
+		try {
+			return currentNode.getPath().hashCode();
+		} catch (RepositoryException e) {
+			return -1;
+		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		try {
+			Node other = ((JcrTreeNode)obj).getNode();
+			return currentNode.getPath().equals(other.getPath());
+		} catch (Exception e) {
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return currentNode.getName();
+		} catch (RepositoryException e) {
+			return "error";
+		}
+	}
 }

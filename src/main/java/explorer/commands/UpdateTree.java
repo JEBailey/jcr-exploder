@@ -2,6 +2,7 @@ package explorer.commands;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import explorer.ide.tree.JcrTreeNode;
 import flack.commands.Command;
@@ -19,14 +20,9 @@ public class UpdateTree implements Command {
 	@Override
 	public void process(Event event) {
 		JcrTreeNode treeNode = (JcrTreeNode)event.getData();
-		tree.getSelectionPath();
 		DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-		model.nodeChanged(treeNode);
-		model.reload(treeNode);
-		tree.treeDidChange();
-		tree.invalidate();
-		tree.expandPath(null);
-		System.out.print("updating model");
+		model.nodeStructureChanged(treeNode.getParent());
+		tree.expandRow(tree.getRowForPath(new TreePath(treeNode.getPath())));
 	}
 
 }

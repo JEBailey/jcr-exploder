@@ -43,39 +43,7 @@ public class JcrJTree extends JTree {
 				TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
 
-			private JPopupMenu menu = new JPopupMenu() {
-				
-				JMenuItem mntmCopy = new JMenuItem("Copy");
-				JMenuItem mntmPaste = new JMenuItem("Paste");
-				JMenuItem mntmDelete = new JMenuItem("Delete");
-				final JMenuItem mntmImportFiles = new JMenuItem("Import Files");
-				
-				{
-					add(mntmCopy);
-					add(mntmPaste);
-					add(mntmImportFiles);
-					add(mntmDelete);
-					mntmImportFiles.addActionListener(new ActionListener() {
-
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
-							Dispatcher.getInstance().dispatchEvent(new FindFiles(this, treeNode));
-						}
-					});
-					
-					mntmDelete.addActionListener(new ActionListener() {
-						
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
-							Dispatcher.getInstance().dispatchEvent(new Delete(this, treeNode));
-						}
-					});
-								
-				}
-
-			};
+			private JPopupMenu menu = new RightClickMenu(JcrJTree.this);
 
 			public void mousePressed(MouseEvent e) {
 				showMenuIfPopupTrigger(e);

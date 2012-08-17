@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 public class Dispatcher {
 
 	private static Dispatcher instance;
@@ -55,6 +57,16 @@ public class Dispatcher {
 		}
 		return false;
 		// return eventDispatcher.dispatchEvent( event );
+	}
+	
+	public void asynchEvent(final Event event) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Dispatcher.getInstance().dispatchEvent(event);
+				
+			}
+		});
 	}
 
 	/**

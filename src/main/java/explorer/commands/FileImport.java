@@ -44,8 +44,8 @@ public class FileImport implements Command {
 				if (node.isNodeType("nt:folder")){
 					File file = fc.getSelectedFile();
 					if (file.isFile()){
-						importFile(node,file);
-						dispatcher.dispatchEvent(new NodeModified(event.getSource(), treeNode));
+						JcrTreeNode fileNode = new JcrTreeNode(importFile(node,file));
+						dispatcher.asynchEvent(new NodeModified(event.getSource(), fileNode));
 					} else if (file.isDirectory()){
 						importFolder(node, file);
 					}
@@ -57,7 +57,7 @@ public class FileImport implements Command {
 
 	}
 
-	public void importFile(Node parentnode, File file)
+	public Node importFile(Node parentnode, File file)
 			throws RepositoryException, IOException {
 		MimeTypeService mimeType = (MimeTypeService) mimeTypeTracker
 				.getService();
@@ -74,6 +74,7 @@ public class FileImport implements Command {
 		resNode.setProperty("jcr:lastModified", lastModified);
 		System.out.println(fileNode.getPath());
 		parentnode.getSession().save();
+		return fileNode;
 	}
 
 	public void importFolder(Node parentnode, File directory)
