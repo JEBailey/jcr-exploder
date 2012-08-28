@@ -1,5 +1,7 @@
 package explorer.ide.tree;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -85,17 +87,19 @@ public class CoreTreeModel implements TreeModel {
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
-		int index = -1;
+		int index = 0;
+		boolean found = false;
 		try {
 			String childPath = ((Node)child).getPath();
 			NodeIterator iter = ((Node)parent).getNodes();
 			while (iter.hasNext()){
 				String currentPath = ((Node)iter.nextNode()).getPath();
 				if (currentPath.equals(childPath)){
-					// we need to do apath comparison here
+					// we need to do a path comparison here
 					// because there's no assurance that the
 					// child object is the identical object that
 					// is found when we access the child nodes
+					found = true;
 					break;
 				}
 				++index;
@@ -104,19 +108,17 @@ public class CoreTreeModel implements TreeModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return index;
+		return found ? index : -1;
 	}
 
 	@Override
 	public void addTreeModelListener(TreeModelListener l) {
-		// TODO Auto-generated method stub
-
+		listenerList.add(TreeModelListener.class, l);
 	}
 
 	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
-		// TODO Auto-generated method stub
-
+		listenerList.remove(TreeModelListener.class, l);
 	}
 
 	private void checkLive() {
@@ -297,6 +299,81 @@ public class CoreTreeModel implements TreeModel {
             }
         }
     }
+    
+    public void removeNode(Object node){
+    	Node workingNode = ((Node)node);
+    	try {
+			Node parentNode = workingNode.getParent();
+			int indexOfNode = getIndexOfChild(parentNode, workingNode);
+			fireTreeNodeRemoved(convertToPath(parentNode),indexOfNode,workingNode);
+			workingNode.remove();
+			parentNode.getSession().save();
+		} catch (AccessDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ItemNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    public void insertNode(Node node){
+    	Node parentNode;
+		try {
+			parentNode = node.getParent();
+	    	fireTreeNodeInserted(convertToPath(parentNode), getIndexOfChild(parentNode, node), node);
+		} catch (AccessDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ItemNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    
+    public void updateStructure(Node node){
+    	Node parentNode;
+		try {
+			parentNode = node.getParent();
+			fireTreeStructureChanged(convertToPath(parentNode), getIndexOfChild(parentNode, node), node);
+		} catch (AccessDeniedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ItemNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RepositoryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    protected Object[] convertToPath(Node node){
+    	Node workNode = node;
+    	Object[] reply = {};
+    	try {
+    		int depth = node.getDepth();
+			reply = new Object[depth+1];//depth starts at 0 for root
+			while(depth > 0){
+				reply[depth] = workNode;
+				workNode = workNode.getParent();
+				depth = workNode.getDepth();
+			}
+			reply[depth]= workNode;//root
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		}
+    	return reply;
+    }
+    
 
     protected void fireTreeNodeRemoved(Object[] path, int index, Object child) {
         fireTreeNodesRemoved(path, new int[] { index }, new Object[] { child });

@@ -30,8 +30,8 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
 				row, hasFocus);
 		Type type = Type.file;
-		if (value != null && (value instanceof JcrTreeNode)) {
-			Node node = ((JcrTreeNode) value).getNode();
+		if (value != null && (value instanceof Node)) {
+			Node node = (Node) value;
 			try {
 				if (node.isNodeType("nt:folder")) {
 					type = expanded ? Type.folder_open: Type.folder;

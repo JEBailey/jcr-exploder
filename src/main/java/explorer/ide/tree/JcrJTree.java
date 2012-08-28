@@ -19,6 +19,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.sling.api.resource.ResourceResolver;
+
 import explorer.events.Delete;
 import explorer.events.FindFiles;
 import explorer.events.NodeSelected;
@@ -89,8 +91,8 @@ public class JcrJTree extends JTree {
 	public String convertValueToText(Object value, boolean selected,
 			boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		if (value != null) {
-			if (value instanceof JcrTreeNode) {
-				Node node = ((JcrTreeNode)value).getNode();
+			if (value instanceof Node) {
+				Node node = (Node)value;
 				try {
 					return node.getName();
 				} catch (RepositoryException e) {
@@ -102,16 +104,16 @@ public class JcrJTree extends JTree {
 				hasFocus);
 	}
 	
-	public void configureTree(Session session) throws Exception{
-		setModel(new DefaultTreeModel(new JcrTreeNode(session.getRootNode())));
+	public void configureTree(ResourceResolver resolver) throws Exception{
+		setModel(new CoreTreeModel(resolver));
 		setCellRenderer(new JcrTreeNodeRenderer());
 		getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 			
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				JcrTreeNode treeNode = (JcrTreeNode)getLastSelectedPathComponent();
+				Node treeNode = (Node)getLastSelectedPathComponent();
 				if (treeNode != null){
-					Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, treeNode.getNode()));
+					Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, treeNode));
 					// TODO: handle a null selection which occurs when a selection is deleted.
 					// this should be passed into the handler which then displays a default view
 				}

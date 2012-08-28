@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.commands.FileImport;
-import explorer.commands.RemoveNodes;
+import explorer.commands.RemoveNodeCommand;
 import explorer.commands.UpdateEditorPane;
 import explorer.commands.UpdateTableModel;
 import explorer.commands.UpdateTree;
@@ -88,7 +88,7 @@ public class ExplorerIDE {
 			}});
 			addCommand(FindFiles.class, new FileImport(context));
 			addCommand(NodeModified.class, new UpdateTree(tree));
-			addCommand(Delete.class, new RemoveNodes());
+			addCommand(Delete.class, new RemoveNodeCommand());
 		}};
 		resourceTracker = new ResourceFactoryTracker(context);
 		resourceTracker.open();
@@ -220,7 +220,7 @@ public class ExplorerIDE {
 			ResourceResolverFactory resourceResolverFactory = (ResourceResolverFactory)super.addingService(reference);
 			try {
 				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-				((JcrJTree)tree).configureTree(resourceResolver.adaptTo(Session.class));
+				((JcrJTree)tree).configureTree(resourceResolver);
 				table.setModel(model);
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());

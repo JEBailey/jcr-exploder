@@ -15,7 +15,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 import explorer.events.NodeModified;
-import explorer.ide.tree.JcrTreeNode;
 import flack.commands.Command;
 import flack.control.Dispatcher;
 import flack.control.Event;
@@ -35,16 +34,15 @@ public class FileImport implements Command {
 
 	@Override
 	public void process(Event event) {
-		JcrTreeNode treeNode = (JcrTreeNode)event.getData();
+		Node node = (Node)event.getData();
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {	
-			Node node = treeNode.getNode();
 			try {
 				if (node.isNodeType("nt:folder")){
 					File file = fc.getSelectedFile();
 					if (file.isFile()){
-						JcrTreeNode fileNode = new JcrTreeNode(importFile(node,file));
+						Node fileNode = importFile(node,file);
 						dispatcher.asynchEvent(new NodeModified(event.getSource(), fileNode));
 					} else if (file.isDirectory()){
 						importFolder(node, file);

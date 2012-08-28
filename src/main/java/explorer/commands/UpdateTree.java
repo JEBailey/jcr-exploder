@@ -1,10 +1,12 @@
 package explorer.commands;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
-import explorer.ide.tree.JcrTreeNode;
+import explorer.ide.tree.CoreTreeModel;
 import flack.commands.Command;
 import flack.control.Event;
 
@@ -19,10 +21,12 @@ public class UpdateTree implements Command {
 
 	@Override
 	public void process(Event event) {
-		JcrTreeNode treeNode = (JcrTreeNode)event.getData();
-		DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-		model.nodeStructureChanged(treeNode.getParent());
-		tree.expandRow(tree.getRowForPath(new TreePath(treeNode.getPath())));
+		Node treeNode = (Node)event.getData();
+		CoreTreeModel model = (CoreTreeModel)tree.getModel();
+		model.updateStructure(treeNode);
+
+		//model.nodeStructureChanged(treeNode);
+		//tree.expandRow(tree.getRowForPath(new TreePath(treeNode.getPath())));
 	}
 
 }

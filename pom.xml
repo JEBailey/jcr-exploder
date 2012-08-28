@@ -88,6 +88,10 @@
 							could be set to true to also remove the content when the package is removed 
 							the choice is yours. The second line will overwrite the path will install 
 							the files and overwrite them if you re-install. -->
+						<!-- <Sling-Initial-Content>
+							SLING-INF/initial-content/content/tools;path:=/content/tools;overwrite:=true;uninstall:=true,
+							SLING-INF/initial-content/apps/sas/pageMaker;path:=/apps/sas/pageMaker;overwrite:=true;uninstall:=true,
+						</Sling-Initial-Content> -->
 					</instructions>
 				</configuration>
 			</plugin>
