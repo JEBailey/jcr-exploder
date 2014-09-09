@@ -1,10 +1,7 @@
 package explorer.ide.tree;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
+import java.util.Iterator;
+
 import javax.jcr.Session;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
@@ -12,6 +9,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 public class CoreTreeModel implements TreeModel {
@@ -29,53 +27,42 @@ public class CoreTreeModel implements TreeModel {
 	@Override
 	public Object getRoot() {
 		checkLive();
-		try {
-			return session.getRootNode();
-		} catch (RepositoryException e) {
-			return null;
-		}
+		return resourceResolver.getResource("/");
 	}
 
 	@Override
 	public Object getChild(Object parent, int index) {
 		checkLive();
-		NodeIterator ni;
-		try {
-			ni = ((Node) parent).getNodes();
-			ni.skip(index);
-			return ni.next();
-		} catch (RepositoryException e) {
-			return null;
+		Iterator<Resource> ni = ((Resource) parent).listChildren();
+		while (index > 0){
+			ni.next();
+			--index;
 		}
-
+		return ni.next();
 	}
 
 	@Override
 	public int getChildCount(Object parent) {
 		checkLive();
-		try {
-			if (((Node) parent).isNodeType("nt:file")) {
-				return 0;
-			}
-			int reply = (int) ((Node) parent).getNodes().getSize();
-			return reply < 1 ? 0 : reply;
-		} catch (RepositoryException e) {
-			return 0;
+		int reply = 0;
+		Resource resource = (Resource) parent;
+		if (resource.isResourceType("nt:file")) {
+			return reply;
 		}
+		Iterator<Resource> it = resource.listChildren();
+		while (it.hasNext()){
+			it.next();
+			++reply;
+		}
+		return reply;
 	}
 
 	@Override
 	public boolean isLeaf(Object node) {
+		Resource resource = (Resource)node;
 		checkLive();
-		try {
-			Node currentNode = (Node) node;
-			return currentNode.isNodeType("nt:file") ? true : !currentNode
-					.getNodes().hasNext();
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
+		return resource.isResourceType("nt:file") ? true : !resource.listChildren().hasNext();
+
 	}
 
 	@Override
@@ -87,27 +74,26 @@ public class CoreTreeModel implements TreeModel {
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
+		Resource resource = ((Resource)parent);
+		Resource childResource = ((Resource)child);
 		int index = 0;
 		boolean found = false;
-		try {
-			String childPath = ((Node)child).getPath();
-			NodeIterator iter = ((Node)parent).getNodes();
-			while (iter.hasNext()){
-				String currentPath = ((Node)iter.nextNode()).getPath();
-				if (currentPath.equals(childPath)){
-					// we need to do a path comparison here
-					// because there's no assurance that the
-					// child object is the identical object that
-					// is found when we access the child nodes
-					found = true;
-					break;
-				}
-				++index;
+
+		String childPath = childResource.getPath();
+		Iterator<Resource> iter = resource.listChildren();
+		while (iter.hasNext()){
+			String currentPath = iter.next().getPath();
+			if (currentPath.equals(childPath)){
+				// we need to do a path comparison here
+				// because there's no assurance that the
+				// child object is the identical object that
+				// is found when we access the child nodes
+				found = true;
+				break;
 			}
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			++index;
 		}
+
 		return found ? index : -1;
 	}
 
@@ -301,6 +287,7 @@ public class CoreTreeModel implements TreeModel {
     }
     
     public void removeNode(Object node){
+    	/*
     	Node workingNode = ((Node)node);
     	try {
 			Node parentNode = workingNode.getParent();
@@ -318,10 +305,12 @@ public class CoreTreeModel implements TreeModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
     	
     }
     
-    public void insertNode(Node node){
+    public void insertNode(Resource node){
+    	/*
     	Node parentNode;
 		try {
 			parentNode = node.getParent();
@@ -335,11 +324,12 @@ public class CoreTreeModel implements TreeModel {
 		} catch (RepositoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
     
     
-    public void updateStructure(Node node){
+    public void updateStructure(Resource node){
+    	/*
     	Node parentNode;
 		try {
 			parentNode = node.getParent();
@@ -353,10 +343,11 @@ public class CoreTreeModel implements TreeModel {
 		} catch (RepositoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
     
-    protected Object[] convertToPath(Node node){
+    protected Object[] convertToPath(Resource node){
+    	/*
     	Node workNode = node;
     	Object[] reply = {};
     	try {
@@ -371,7 +362,7 @@ public class CoreTreeModel implements TreeModel {
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		}
-    	return reply;
+    	return reply;*/return null;
     }
     
 

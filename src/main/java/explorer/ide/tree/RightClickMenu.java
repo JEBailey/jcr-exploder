@@ -53,7 +53,7 @@ public class RightClickMenu extends JPopupMenu {
 					Node parentNode = treeNode.getParent();
 					treeNode.remove();
 					parentNode.getSession().save();
-					((CoreTreeModel)tree.getModel()).updateStructure(parentNode);
+					((CoreTreeModel)tree.getModel()).updateStructure(null);
 				} catch (AccessDeniedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

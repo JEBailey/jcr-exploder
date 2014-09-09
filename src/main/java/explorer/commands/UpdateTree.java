@@ -1,10 +1,8 @@
 package explorer.commands;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.swing.JTree;
+
+import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.tree.CoreTreeModel;
 import flack.commands.Command;
@@ -21,7 +19,7 @@ public class UpdateTree implements Command {
 
 	@Override
 	public void process(Event event) {
-		Node treeNode = (Node)event.getData();
+		Resource treeNode = (Resource)event.getData();
 		CoreTreeModel model = (CoreTreeModel)tree.getModel();
 		model.updateStructure(treeNode);
 

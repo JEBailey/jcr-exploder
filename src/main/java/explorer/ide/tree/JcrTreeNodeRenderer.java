@@ -7,6 +7,8 @@ import javax.jcr.Property;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,16 +32,16 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
 				row, hasFocus);
 		Type type = Type.file;
-		if (value != null && (value instanceof Node)) {
-			Node node = (Node) value;
+		if (value != null && (value instanceof Resource)) {
+			Resource resource = (Resource) value;
 			try {
-				if (node.isNodeType("nt:folder")) {
+				if (resource.isResourceType("nt:folder")) {
 					type = expanded ? Type.folder_open: Type.folder;
-				} else if (node.isNodeType("nt:file")) {
-					Property prop = node
-							.getProperty("jcr:content/jcr:mimeType");
+				} else if (resource.isResourceType("nt:file")) {
+					ResourceMetadata metaData = resource.getResourceMetadata();
+					String prop = metaData.getContentType();
 					if (prop != null) {
-						String mime[] = prop.getString().split("/");
+						String mime[] = prop.split("/");
 						Type base = getType(mime[0]);
 						if (mime.length > 1) {
 							Type extended = getType(mime[1]);
@@ -49,7 +51,7 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 						if (base != null)
 							type = base;
 					}
-				} else if (node.isNodeType("nt:unstructured"))
+				} else if (resource.isResourceType("nt:unstructured"))
 					type = Type.node_select_child;
 			} catch (Exception e) {
 				log.error(e.getMessage());

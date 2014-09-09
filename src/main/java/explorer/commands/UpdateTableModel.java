@@ -1,6 +1,6 @@
 package explorer.commands;
 
-import javax.jcr.Node;
+import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.table.JcrTableModelImpl;
 import flack.commands.Command;
@@ -18,7 +18,7 @@ public class UpdateTableModel implements Command {
 
 	@Override
 	public void process(Event event) {
-		table.node = (Node)event.getData();
+		table.setResource((Resource)event.getData());
 		table.fireTableDataChanged();
 	}
 
