@@ -10,20 +10,11 @@ import javax.swing.text.JTextComponent;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(description="Swing based explorer",label="Explorer IDE")
 public class GUIExplorer implements Runnable {
-	
-	
-	@Reference
-	private ResourceResolverFactory resourceResolverFactory;
 
 	
 	private static final Logger log = LoggerFactory
@@ -55,16 +46,6 @@ public class GUIExplorer implements Runnable {
 
 	@Override
 	public void run() {
-		ResourceResolver resourceResolver = null;// =
-		try {
-			if (resourceResolverFactory != null){
-				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-			} else {
-				log.error("attempting to run with a null resource resolver factory");
-			}
-		} catch (Throwable e1) {
-			log.error(e1.getLocalizedMessage());
-		}
 		frame = new ExplorerIDE(Activator.context).frmJcrExploder;
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
