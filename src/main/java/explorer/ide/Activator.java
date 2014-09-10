@@ -1,12 +1,10 @@
 package explorer.ide;
 
 import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-@Component
 public class Activator implements BundleActivator {
 	
 	public static BundleContext context;

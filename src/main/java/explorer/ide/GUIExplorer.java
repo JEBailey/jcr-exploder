@@ -10,10 +10,11 @@ import javax.swing.text.JTextComponent;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
+import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(description="Swing based explorer",label="Explorer IDE")
+@Component(description="Swing based explorer",label="Explorer IDE", name="ExplorerIDE")
 public class GUIExplorer implements Runnable {
 
 	
@@ -23,8 +24,11 @@ public class GUIExplorer implements Runnable {
 	
 	private JFrame frame;
 	
+	ComponentContext context;
+	
 	@Activate
-	public void activate() throws Exception{
+	public void activate(ComponentContext context) throws Exception{
+		this.context = context;
 		try {
 			javax.swing.SwingUtilities.invokeAndWait(this);
 		} catch (Exception ex) {
@@ -50,7 +54,7 @@ public class GUIExplorer implements Runnable {
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				//no idea right now
+				context.disableComponent("ExplorerIDE");
 			}
 		});
 		frame.setVisible(true);
