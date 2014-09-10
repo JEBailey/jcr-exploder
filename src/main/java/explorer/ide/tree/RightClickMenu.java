@@ -13,7 +13,7 @@ import javax.swing.JTree;
 
 import explorer.events.Delete;
 import explorer.events.FindFiles;
-import flack.control.Dispatcher;
+import flack.control.DispatcherDefaultImpl;
 
 @SuppressWarnings("serial")
 public class RightClickMenu extends JPopupMenu {
@@ -40,7 +40,7 @@ public class RightClickMenu extends JPopupMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Node treeNode = (Node)tree.getLastSelectedPathComponent();
-				Dispatcher.getInstance().dispatchEvent(new FindFiles(this, treeNode));
+				DispatcherDefaultImpl.getInstance().dispatchEvent(new FindFiles(this, treeNode));
 			}
 		});
 		

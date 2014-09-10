@@ -43,8 +43,9 @@ import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
-import flack.commands.MultipleCommand;
+import flack.commands.api.MultipleCommand;
 import flack.control.EventController;
+import flack.control.EventControllerDefaultImpl;
 
 
 public class ExplorerIDE {
@@ -81,7 +82,7 @@ public class ExplorerIDE {
 	
 	
 	private void bundleInitialize() {
-		controller = new EventController(){{
+		controller = new EventControllerDefaultImpl(){{
 			addCommand(NodeSelected.class, new MultipleCommand(){{
 				add(new UpdateTableModel(model));
 				add(new UpdateEditorPane(editorTextArea));

@@ -1,28 +1,9 @@
 package flack.control;
 
-import java.util.EventObject;
+public interface Event {
 
-@SuppressWarnings("serial")
-public class Event extends EventObject {
-	
-	private Object data;
+	public abstract Object getData();
 
-	public Event(Object source) {
-		super(source);
-	}
-	
-	public Event(Object source, Object data) {
-		super(source);
-		this.data = data;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-	
+	public abstract void setData(Object data);
 
 }

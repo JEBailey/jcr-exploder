@@ -1,79 +1,27 @@
 package flack.control;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.SwingUtilities;
-
-public class Dispatcher {
-
-	private static Dispatcher instance;
-
-	private Map<Class<?>, List<EventController>> handlers;
-
-	public static Dispatcher getInstance() {
-		if (instance == null) {
-			instance = new Dispatcher();
-		}
-		return instance;
-	}
-
-	public Dispatcher() {
-		handlers = new HashMap<Class<?>, List<EventController>>();
-	}
+public interface Dispatcher {
 
 	/**
 	 * Adds an event controller.
 	 */
-	public void addController(Class<?> type, EventController listener) {
-		List<EventController> listeners = handlers.get(type);
-		if (listeners == null) {
-			listeners = new ArrayList<EventController>();
-			handlers.put(type, listeners);
-		}
-		listeners.add(listener);
-	}
+	public abstract void addController(Class<?> type, EventControllerDefaultImpl listener);
 
 	/**
 	 * Removes an event controller.
 	 */
-	public boolean removeController(Class<?> type, EventController listener) {
-		List<EventController> listeners = handlers.get(type);
-		if (listeners != null) {
-			return listeners.remove(listener);
-		}
-		return false;
-	}
+	public abstract boolean removeController(Class<?> type, EventController listener);
 
 	/**
 	 * Dispatches an event.
 	 */
-	public boolean dispatchEvent(Event event) {
-		List<EventController> listeners = handlers.get(event.getClass());
-		for (EventController listener:listeners){
-			listener.executeCommand(event);
-		}
-		return false;
-		// return eventDispatcher.dispatchEvent( event );
-	}
-	
-	public void asynchEvent(final Event event) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Dispatcher.getInstance().dispatchEvent(event);
-				
-			}
-		});
-	}
+	public abstract boolean dispatchEvent(EventDefaultImpl event);
+
+	public abstract void asynchEvent(EventDefaultImpl event);
 
 	/**
 	 * Returns whether an event controller exists.
 	 */
-	public boolean hasController(String type) {
-		return handlers.get(type) != null;
-	}
+	public abstract boolean hasController(String type);
 
 }

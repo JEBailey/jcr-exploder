@@ -5,8 +5,8 @@ import javax.swing.JTree;
 import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.tree.CoreTreeModel;
-import flack.commands.Command;
-import flack.control.Event;
+import flack.commands.api.Command;
+import flack.control.EventDefaultImpl;
 
 public class UpdateTree implements Command {
 	
@@ -18,7 +18,7 @@ public class UpdateTree implements Command {
 	}
 
 	@Override
-	public void process(Event event) {
+	public void process(EventDefaultImpl event) {
 		Resource treeNode = (Resource)event.getData();
 		CoreTreeModel model = (CoreTreeModel)tree.getModel();
 		model.updateStructure(treeNode);

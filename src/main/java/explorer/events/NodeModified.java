@@ -1,9 +1,9 @@
 package explorer.events;
 
-import flack.control.Event;
+import flack.control.EventDefaultImpl;
 
 @SuppressWarnings("serial")
-public class NodeModified extends Event {
+public class NodeModified extends EventDefaultImpl {
 
 	public NodeModified(Object source, Object data) {
 		super(source, data);

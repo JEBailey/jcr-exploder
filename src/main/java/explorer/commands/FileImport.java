@@ -15,15 +15,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 import explorer.events.NodeModified;
-import flack.commands.Command;
+import flack.commands.api.Command;
 import flack.control.Dispatcher;
-import flack.control.Event;
+import flack.control.DispatcherDefaultImpl;
+import flack.control.EventDefaultImpl;
 
 public class FileImport implements Command {
 
 	private ServiceTracker mimeTypeTracker;
 	
-	private Dispatcher dispatcher = Dispatcher.getInstance();
+	private Dispatcher dispatcher = DispatcherDefaultImpl.getInstance();
 
 	public FileImport(BundleContext context) {
 		super();
@@ -33,7 +34,7 @@ public class FileImport implements Command {
 	}
 
 	@Override
-	public void process(Event event) {
+	public void process(EventDefaultImpl event) {
 		Node node = (Node)event.getData();
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);

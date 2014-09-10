@@ -16,7 +16,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import explorer.events.NodeSelected;
-import flack.control.Dispatcher;
+import flack.control.DispatcherDefaultImpl;
 
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
@@ -98,7 +98,7 @@ public class JcrJTree extends JTree {
 			public void valueChanged(TreeSelectionEvent e) {
 				Resource treeNode = (Resource) getLastSelectedPathComponent();
 				if (treeNode != null) {
-					Dispatcher.getInstance().dispatchEvent(new NodeSelected(this, treeNode));
+					DispatcherDefaultImpl.getInstance().dispatchEvent(new NodeSelected(this, treeNode));
 					// TODO: handle a null selection which occurs when a
 					// selection is deleted.
 					// this should be passed into the handler which then

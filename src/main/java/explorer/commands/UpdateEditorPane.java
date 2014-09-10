@@ -7,8 +7,8 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
-import flack.commands.Command;
-import flack.control.Event;
+import flack.commands.api.Command;
+import flack.control.EventDefaultImpl;
 
 public class UpdateEditorPane implements Command {
 
@@ -20,7 +20,7 @@ public class UpdateEditorPane implements Command {
 	}
 
 	@Override
-	public void process(Event event) {
+	public void process(EventDefaultImpl event) {
 		Resource resource = (Resource)event.getData();
 		ResourceMetadata metaData = resource.getResourceMetadata();
 		String prop = null;

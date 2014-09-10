@@ -3,8 +3,8 @@ package explorer.commands;
 import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.table.JcrTableModelImpl;
-import flack.commands.Command;
-import flack.control.Event;
+import flack.commands.api.Command;
+import flack.control.EventDefaultImpl;
 
 public class UpdateTableModel implements Command {
 
@@ -17,7 +17,7 @@ public class UpdateTableModel implements Command {
 	}
 
 	@Override
-	public void process(Event event) {
+	public void process(EventDefaultImpl event) {
 		table.setResource((Resource)event.getData());
 		table.fireTableDataChanged();
 	}

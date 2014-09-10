@@ -1,7 +1,7 @@
-package flack.commands;
+package flack.commands.api;
 
-import flack.control.Dispatcher;
-import flack.control.Event;
+import flack.control.DispatcherDefaultImpl;
+import flack.control.EventDefaultImpl;
 
 /**
  * The Chained Command allows you to fire off one event
@@ -17,20 +17,20 @@ import flack.control.Event;
  */
 public abstract class ChainedCommand implements Command {
 	
-	private Event next;
+	private EventDefaultImpl next;
 	
-	public ChainedCommand(Event next) {
+	public ChainedCommand(EventDefaultImpl next) {
 		super();
 		this.next = next;
 	}
 
 
 	@Override
-	public abstract void process(Event event);
+	public abstract void process(EventDefaultImpl event);
 	
 	public void fireNextEvent(){
 		if (next != null){
-			Dispatcher.getInstance().dispatchEvent(next);
+			DispatcherDefaultImpl.getInstance().dispatchEvent(next);
 		}
 	}
 

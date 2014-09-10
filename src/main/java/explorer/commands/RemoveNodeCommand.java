@@ -5,16 +5,17 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import flack.commands.Command;
+import flack.commands.api.Command;
 import flack.control.Dispatcher;
-import flack.control.Event;
+import flack.control.DispatcherDefaultImpl;
+import flack.control.EventDefaultImpl;
 
 public class RemoveNodeCommand implements Command {
 
-	private Dispatcher dispatcher = Dispatcher.getInstance();
+	private Dispatcher dispatcher = DispatcherDefaultImpl.getInstance();
 	
 	@Override
-	public void process(Event event) {
+	public void process(EventDefaultImpl event) {
 		Node node = (Node)event.getData();
 		try {
 			Node parentNode = node.getParent();
