@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import flack.control.api.Dispatcher;
+import flack.control.api.EventController;
+
 public class DispatcherDefaultImpl implements Dispatcher {
 
 	private static Dispatcher instance;

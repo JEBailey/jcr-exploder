@@ -1,4 +1,4 @@
-package flack.control;
+package flack.control.api;
 
 public interface Event {
 

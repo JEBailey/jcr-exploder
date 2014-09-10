@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import flack.commands.api.Command;
+import flack.control.api.EventController;
 
 public class EventControllerDefaultImpl implements EventListener, EventController {
 	

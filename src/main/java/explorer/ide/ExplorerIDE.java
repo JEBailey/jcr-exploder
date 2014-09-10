@@ -44,8 +44,8 @@ import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
 import flack.commands.api.MultipleCommand;
-import flack.control.EventController;
 import flack.control.EventControllerDefaultImpl;
+import flack.control.api.EventController;
 
 
 public class ExplorerIDE {

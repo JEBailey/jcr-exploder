@@ -6,9 +6,9 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import flack.commands.api.Command;
-import flack.control.Dispatcher;
 import flack.control.DispatcherDefaultImpl;
 import flack.control.EventDefaultImpl;
+import flack.control.api.Dispatcher;
 
 public class RemoveNodeCommand implements Command {
 

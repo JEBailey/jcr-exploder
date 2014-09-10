@@ -1,6 +1,7 @@
-package flack.control;
+package flack.control.api;
 
 import flack.commands.api.Command;
+import flack.control.EventDefaultImpl;
 
 public interface EventController {
 

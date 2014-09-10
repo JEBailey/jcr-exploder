@@ -1,4 +1,7 @@
-package flack.control;
+package flack.control.api;
+
+import flack.control.EventControllerDefaultImpl;
+import flack.control.EventDefaultImpl;
 
 public interface Dispatcher {
 
@@ -17,6 +20,12 @@ public interface Dispatcher {
 	 */
 	public abstract boolean dispatchEvent(EventDefaultImpl event);
 
+	
+	/**
+	 * Dispatches event asynchronously into the SwingInvoker
+	 * 
+	 * @param event
+	 */
 	public abstract void asynchEvent(EventDefaultImpl event);
 
 	/**

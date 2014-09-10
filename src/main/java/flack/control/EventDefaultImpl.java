@@ -2,6 +2,8 @@ package flack.control;
 
 import java.util.EventObject;
 
+import flack.control.api.Event;
+
 @SuppressWarnings("serial")
 public class EventDefaultImpl extends EventObject implements Event {
 	
