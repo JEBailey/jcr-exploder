@@ -4,8 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.jcr.Session;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -16,11 +17,18 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -28,11 +36,11 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.commands.FileImport;
 import explorer.commands.RemoveNodeCommand;
 import explorer.commands.UpdateEditorPane;
 import explorer.commands.UpdateTableModel;
@@ -43,14 +51,16 @@ import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
 import explorer.ide.tree.JcrJTree;
+import flack.commands.api.Command;
 import flack.commands.api.MultipleCommand;
 import flack.control.EventControllerDefaultImpl;
 import flack.control.api.EventController;
 
+@Component(description="Swing based explorer",label="Explorer IDE", name="ExplorerIDE")
+public class ExplorerIDE implements Runnable {
 
-public class ExplorerIDE {
-
-	public JFrame frmJcrExploder;
+	
+	private JFrame frmJcrExploder;
 	
 	private RSyntaxTextArea editorTextArea;
 	
@@ -74,12 +84,10 @@ public class ExplorerIDE {
 		initialize();
 	}
 	
-	public ExplorerIDE(BundleContext context) {
-		this.context = context;
-		initialize();
-		bundleInitialize();
-	}
+
 	
+	@Reference(target="(type=fileImport)",policy=ReferencePolicy.STATIC)
+	Command fileImport;
 	
 	private void bundleInitialize() {
 		controller = new EventControllerDefaultImpl(){{
@@ -87,7 +95,7 @@ public class ExplorerIDE {
 				add(new UpdateTableModel(model));
 				add(new UpdateEditorPane(editorTextArea));
 			}});
-			addCommand(FindFiles.class, new FileImport(context));
+			addCommand(FindFiles.class, fileImport);
 			addCommand(NodeModified.class, new UpdateTree(tree));
 			addCommand(Delete.class, new RemoveNodeCommand());
 		}};
@@ -230,6 +238,46 @@ public class ExplorerIDE {
 			return resourceResolverFactory;
 		}
 		
+	}
+	
+	ComponentContext componentContext;
+	
+	@Activate
+	public void activate(BundleContext bc, ComponentContext context) throws Exception{
+		this.context = bc;
+		this.componentContext = context;
+		try {
+			javax.swing.SwingUtilities.invokeAndWait(this);
+		} catch (Exception ex) {
+			log.error("non event dispatch thread errored");
+			throw ex;
+		}
+	}
+	
+	@Deactivate
+	public void deactivate() throws Exception{
+		UIManager.put("RTextAreaUI.actionMap", null);
+		UIManager.put("RSyntaxTextAreaUI.actionMap", null);
+		JTextComponent.removeKeymap("RTextAreaKeymap");
+		
+		frmJcrExploder.setVisible(false);
+		frmJcrExploder.dispose();
+		frmJcrExploder = null;
+	}
+
+	@Override
+	public void run() {
+		initialize();
+		bundleInitialize();
+		//frameInstance = new ExplorerIDE().frmJcrExploder;
+		frmJcrExploder.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frmJcrExploder.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent evt) {
+				componentContext.disableComponent("ExplorerIDE");
+			}
+		});
+		frmJcrExploder.setVisible(true);
+		log.info("application is running");
 	}
 
 

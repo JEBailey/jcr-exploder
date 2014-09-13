@@ -2,7 +2,6 @@ package explorer.ide.tree;
 
 import java.awt.Component;
 
-import javax.jcr.Node;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -13,13 +12,14 @@ import org.slf4j.LoggerFactory;
 
 import explorer.ide.ui.IconCache;
 import explorer.ide.ui.IconCache.Type;
+import explorer.node.NodeTypeUtil;
 
 // Referenced classes of package explorer.ide.tree:
 //            JcrTreeNode
 
 @SuppressWarnings("serial")
 public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
-
+	
 	public JcrTreeNodeRenderer() {
 	}
 	
@@ -33,11 +33,10 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 		Type type = Type.file;
 		if (value != null && (value instanceof Resource)) {
 			Resource resource = (Resource) value;
-			Node node = ((Resource)value).adaptTo(Node.class);
 			try {
-				if (node.isNodeType("nt:folder")) {
+				if (NodeTypeUtil.isType(resource,"nt:folder")){
 					type = expanded ? Type.folder_open: Type.folder;
-				} else if (resource.isResourceType("nt:file")) {
+				} else if (NodeTypeUtil.isType(resource,"nt:file")) {
 					ResourceMetadata metaData = resource.getResourceMetadata();
 					String prop = metaData.getContentType();
 					if (prop != null) {
@@ -53,8 +52,9 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 							type = base;
 						}
 					}
-				} else if (resource.isResourceType("nt:unstructured"))
+				} else if (NodeTypeUtil.isType(resource,"nt:unstructured")){
 					type = Type.node_select_child;
+				}
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}

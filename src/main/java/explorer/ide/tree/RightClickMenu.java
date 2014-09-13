@@ -11,15 +11,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
-import explorer.events.Delete;
+import org.apache.sling.api.resource.Resource;
+
 import explorer.events.FindFiles;
 import flack.control.DispatcherDefaultImpl;
 
 @SuppressWarnings("serial")
 public class RightClickMenu extends JPopupMenu {
-	
+
 	JTree tree;
-	
+
 	public RightClickMenu(JTree tree) {
 		super();
 		this.tree = tree;
@@ -29,7 +30,7 @@ public class RightClickMenu extends JPopupMenu {
 	JMenuItem mntmPaste = new JMenuItem("Paste");
 	JMenuItem mntmDelete = new JMenuItem("Delete");
 	final JMenuItem mntmImportFiles = new JMenuItem("Import Files");
-	
+
 	{
 		add(mntmCopy);
 		add(mntmPaste);
@@ -39,21 +40,21 @@ public class RightClickMenu extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Node treeNode = (Node)tree.getLastSelectedPathComponent();
+				Resource treeNode = (Resource) tree.getLastSelectedPathComponent();
 				DispatcherDefaultImpl.getInstance().dispatchEvent(new FindFiles(this, treeNode));
 			}
 		});
-		
+
 		mntmDelete.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Node treeNode = (Node)tree.getLastSelectedPathComponent();
+				Node treeNode = (Node) tree.getLastSelectedPathComponent();
 				try {
 					Node parentNode = treeNode.getParent();
 					treeNode.remove();
 					parentNode.getSession().save();
-					((CoreTreeModel)tree.getModel()).updateStructure(null);
+					((CoreTreeModel) tree.getModel()).updateStructure(null);
 				} catch (AccessDeniedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -64,10 +65,9 @@ public class RightClickMenu extends JPopupMenu {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				
+
 			}
 		});
-					
+
 	}
 }

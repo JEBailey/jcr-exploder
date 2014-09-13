@@ -7,6 +7,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import explorer.node.NodeTypeUtil;
 import flack.commands.api.Command;
 import flack.control.EventDefaultImpl;
 
@@ -26,7 +27,7 @@ public class UpdateEditorPane implements Command {
 		String prop = null;
 		String reply = "";
 		try {
-			if (resource.isResourceType("nt:file")){
+			if (NodeTypeUtil.isType(resource, "nt:file")){
 				prop = metaData.getContentType();
 				if (prop.contains("text") || prop.contains("application")){
 					InputStream prop2 = resource.adaptTo(InputStream.class);

@@ -10,6 +10,13 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.JFileChooser;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.mime.MimeTypeService;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -20,22 +27,31 @@ import flack.control.DispatcherDefaultImpl;
 import flack.control.EventDefaultImpl;
 import flack.control.api.Dispatcher;
 
+@Component(name="File Import Event",description="Provides the UI to import a file or files")
+@Service
+@Property(name="type", value="fileImport")
 public class FileImport implements Command {
 
+	@Reference
+	private MimeTypeService mime;
+	
 	private ServiceTracker mimeTypeTracker;
 	
 	private Dispatcher dispatcher = DispatcherDefaultImpl.getInstance();
+	
+	@Activate
+	public void activate(BundleContext context) {
 
-	public FileImport(BundleContext context) {
-		super();
-		mimeTypeTracker = new ServiceTracker(context,
-				MimeTypeService.class.getName(), null);
-		mimeTypeTracker.open();
+	}
+	
+	@Deactivate
+	public void deactivate(){
 	}
 
 	@Override
 	public void process(EventDefaultImpl event) {
-		Node node = (Node)event.getData();
+		Resource resource = (Resource)event.getData();
+		Node node = resource.adaptTo(Node.class);
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {	
