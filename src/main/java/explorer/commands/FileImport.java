@@ -27,7 +27,7 @@ import flack.control.DispatcherDefaultImpl;
 import flack.control.EventDefaultImpl;
 import flack.control.api.Dispatcher;
 
-@Component(name="File Import Event",description="Provides the UI to import a file or files")
+@Component(name="Sling Explorer - File Import Command",description="Provides the UI to import a file or files")
 @Service
 @Property(name="type", value="fileImport")
 public class FileImport implements Command {

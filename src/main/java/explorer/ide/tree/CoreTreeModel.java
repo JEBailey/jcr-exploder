@@ -9,20 +9,40 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 
+@Component(name="Tree Model",description="Models resource tree")
+@Service
 public class CoreTreeModel implements TreeModel {
 
+	@Reference
+	private ResourceResolverFactory factory;
+	
 	private ResourceResolver resourceResolver;
 	private Session session;
 	
 	private final EventListenerList listenerList = new EventListenerList();
 
-	public CoreTreeModel(ResourceResolver resourceResolver) {
-		this.resourceResolver = resourceResolver;
-		this.session = this.resourceResolver.adaptTo(Session.class);
+	@Activate
+	private void activate() throws LoginException {
+		resourceResolver = factory.getAdministrativeResourceResolver(null);
+		session = resourceResolver.adaptTo(Session.class);
 	}
+
+	@Deactivate
+	private void deactivate(){
+		resourceResolver.close();
+		session.logout();
+	}
+	
 
 	@Override
 	public Object getRoot() {
@@ -46,9 +66,6 @@ public class CoreTreeModel implements TreeModel {
 		checkLive();
 		int reply = 0;
 		Resource resource = (Resource) parent;
-		//if (resource.isResourceType("nt:file")) {
-		//	return reply;
-		//}
 		Iterator<Resource> it = resource.listChildren();
 		while (it.hasNext()){
 			it.next();

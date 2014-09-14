@@ -19,25 +19,17 @@ import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +42,6 @@ import explorer.events.FindFiles;
 import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
 import explorer.ide.table.JcrTableModelImpl;
-import explorer.ide.tree.JcrJTree;
 import flack.commands.api.Command;
 import flack.commands.api.MultipleCommand;
 import flack.control.EventControllerDefaultImpl;
@@ -64,12 +55,7 @@ public class ExplorerIDE implements Runnable {
 	
 	private RSyntaxTextArea editorTextArea;
 	
-	private BundleContext context;
-	
-	private ResourceResolver resourceResolver;
-	
-	private ResourceFactoryTracker resourceTracker;
-	
+		
 	@SuppressWarnings("unused")
 	private EventController controller;
 
@@ -77,19 +63,10 @@ public class ExplorerIDE implements Runnable {
 			.getLogger(ExplorerIDE.class);
 
 	@Reference
-	JcrTableModelImpl model;
+	JcrTableModelImpl tableModel;
 	
 	@Reference
 	JTree jTree;
-	
-	/**
-	 * Create the application.
-	 */
-	public ExplorerIDE() {
-
-	}
-	
-
 	
 	@Reference(target="(type=fileImport)",policy=ReferencePolicy.STATIC)
 	Command fileImport;
@@ -101,15 +78,13 @@ public class ExplorerIDE implements Runnable {
 		((UpdateEditorPane)updatePane).setEditorPane(editorTextArea);
 		controller = new EventControllerDefaultImpl(){{
 			addCommand(NodeSelected.class, new MultipleCommand(){{
-				add(new UpdateTableModel(model));
+				add(new UpdateTableModel(tableModel));
 				add(updatePane);
 			}});
 			addCommand(FindFiles.class, fileImport);
 			addCommand(NodeModified.class, new UpdateTree(jTree));
 			addCommand(Delete.class, new RemoveNodeCommand());
 		}};
-		resourceTracker = new ResourceFactoryTracker(context);
-		resourceTracker.open();
 	}
 	
 	private JTable table;
@@ -117,10 +92,9 @@ public class ExplorerIDE implements Runnable {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	@SuppressWarnings("serial")
 	private void initialize() {
 		frmJcrExploder = new JFrame();
-		frmJcrExploder.setTitle("JCR Exploder");
+		frmJcrExploder.setTitle("Sling Explorer GUI");
 		frmJcrExploder.setBounds(100, 100, 800, 600);
 		frmJcrExploder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -129,11 +103,9 @@ public class ExplorerIDE implements Runnable {
 		frmJcrExploder.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
 		JSplitPane splitPane_1 = new JSplitPane();
-		splitPane_1.setDividerSize(2);
+		splitPane_1.setDividerSize(4);
 		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setRightComponent(splitPane_1);
-		
-		
 		
 		JScrollPane propertiesScrollPane = new JScrollPane();
 		splitPane_1.setRightComponent(propertiesScrollPane);
@@ -143,16 +115,7 @@ public class ExplorerIDE implements Runnable {
 		table.setIntercellSpacing(new Dimension(0, 1));
 		table.setBounds(new Rectangle(1, 1, 1, 1));
 		table.setShowVerticalLines(false);
-		String[] headers = new String[] {
-				"Name", "Type", "Value"
-			};
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"jcr:contentType", "String", "nt:resource"},
-				{null, null, null},
-				{null, null, null},
-			}, headers
-		));
+		table.setModel(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		propertiesScrollPane.setViewportView(table);
 		
@@ -174,32 +137,7 @@ public class ExplorerIDE implements Runnable {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 		
-		jTree.setToolTipText("");
-		jTree.setModel(new DefaultTreeModel(
-			new DefaultMutableTreeNode("JTree") {
-				{
-					DefaultMutableTreeNode node_1;
-					node_1 = new DefaultMutableTreeNode("colors");
-						node_1.add(new DefaultMutableTreeNode("blue"));
-						node_1.add(new DefaultMutableTreeNode("violet"));
-						node_1.add(new DefaultMutableTreeNode("red"));
-						node_1.add(new DefaultMutableTreeNode("yellow"));
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("sports");
-						node_1.add(new DefaultMutableTreeNode("basketball"));
-						node_1.add(new DefaultMutableTreeNode("soccer"));
-						node_1.add(new DefaultMutableTreeNode("football"));
-						node_1.add(new DefaultMutableTreeNode("hockey"));
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("food");
-						node_1.add(new DefaultMutableTreeNode("hot dogs"));
-						node_1.add(new DefaultMutableTreeNode("pizza"));
-						node_1.add(new DefaultMutableTreeNode("ravioli"));
-						node_1.add(new DefaultMutableTreeNode("bananas"));
-					add(node_1);
-				}
-			}
-		));
+
 		scrollPane.setViewportView(jTree);
 		
 		JPanel panel = new JPanel();
@@ -218,40 +156,10 @@ public class ExplorerIDE implements Runnable {
 		frmJcrExploder.setJMenuBar(menuBar);
 	}
 	
-	
-	class ResourceFactoryTracker extends ServiceTracker{
-		
-		
-		public ResourceFactoryTracker(BundleContext context) {
-			super(context, ResourceResolverFactory.class.getName(), null);
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public Object addingService(ServiceReference reference) {
-			if (resourceResolver != null){
-				return null;
-			}
-			
-			ResourceResolverFactory resourceResolverFactory = (ResourceResolverFactory)super.addingService(reference);
-			try {
-				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-				((JcrJTree)jTree).configureTree(resourceResolver);
-				table.setModel(model);
-			} catch (Exception e) {
-				log.error(e.getLocalizedMessage());
-			}
-			
-			return resourceResolverFactory;
-		}
-		
-	}
-	
 	ComponentContext componentContext;
 	
 	@Activate
-	public void activate(BundleContext bc, ComponentContext context) throws Exception{
-		this.context = bc;
+	public void activate(ComponentContext context) throws Exception{
 		this.componentContext = context;
 		try {
 			javax.swing.SwingUtilities.invokeAndWait(this);
@@ -276,7 +184,6 @@ public class ExplorerIDE implements Runnable {
 	public void run() {
 		initialize();
 		bundleInitialize();
-		//frameInstance = new ExplorerIDE().frmJcrExploder;
 		frmJcrExploder.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmJcrExploder.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {

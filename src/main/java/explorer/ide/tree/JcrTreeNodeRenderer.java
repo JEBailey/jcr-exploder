@@ -18,7 +18,7 @@ import explorer.ide.ui.IconCache;
 import explorer.ide.ui.IconCache.Type;
 import explorer.node.NodeTypeUtil;
 
-@org.apache.felix.scr.annotations.Component(name="Tree Node Renderer",description="Displays the correct image for the node in the tree")
+@org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Node Renderer",description="Displays the correct image for the node in the tree")
 @Service(value=DefaultTreeCellRenderer.class)
 @Property(name="type", value="updatePane")
 public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {

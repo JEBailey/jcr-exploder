@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -18,14 +19,12 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 
 import explorer.events.NodeSelected;
 import flack.control.DispatcherDefaultImpl;
 
-@org.apache.felix.scr.annotations.Component(name="JCR Tree Renderer",description="Displays the node based tree")
+@org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Renderer",description="Displays the node based tree")
 @Service(value=JTree.class)
-@Property(name="type", value="updatePane")
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
 
@@ -37,9 +36,12 @@ public class JcrJTree extends JTree {
 	
 	@Reference
 	DefaultTreeCellRenderer jcrTreeNodeRenderer;
+	
+	@Reference
+	TreeModel treeModel;
 
 	@Activate
-	private void init() {
+	private void activate() {
 		getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
 
@@ -82,6 +84,9 @@ public class JcrJTree extends JTree {
 				}
 			}
 		});
+		setCellRenderer(jcrTreeNodeRenderer);
+		setToolTipText("");
+		configureTree();
 	}
 
 	@Override
@@ -96,9 +101,9 @@ public class JcrJTree extends JTree {
 		return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
 	}
 
-	public void configureTree(ResourceResolver resolver) throws Exception {
-		setModel(new CoreTreeModel(resolver));
-		setCellRenderer(jcrTreeNodeRenderer);
+	private void configureTree() {
+		setModel(treeModel);
+
 		getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override
