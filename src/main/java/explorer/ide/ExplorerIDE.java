@@ -76,12 +76,17 @@ public class ExplorerIDE implements Runnable {
 	private static final Logger log = LoggerFactory
 			.getLogger(ExplorerIDE.class);
 
-	JcrTableModelImpl model = new JcrTableModelImpl();
+	@Reference
+	JcrTableModelImpl model;
+	
+	@Reference
+	JTree jTree;
+	
 	/**
 	 * Create the application.
 	 */
 	public ExplorerIDE() {
-		initialize();
+
 	}
 	
 
@@ -89,21 +94,24 @@ public class ExplorerIDE implements Runnable {
 	@Reference(target="(type=fileImport)",policy=ReferencePolicy.STATIC)
 	Command fileImport;
 	
+	@Reference(target="(type=updatePane)",policy=ReferencePolicy.STATIC)
+	Command updatePane;
+	
 	private void bundleInitialize() {
+		((UpdateEditorPane)updatePane).setEditorPane(editorTextArea);
 		controller = new EventControllerDefaultImpl(){{
 			addCommand(NodeSelected.class, new MultipleCommand(){{
 				add(new UpdateTableModel(model));
-				add(new UpdateEditorPane(editorTextArea));
+				add(updatePane);
 			}});
 			addCommand(FindFiles.class, fileImport);
-			addCommand(NodeModified.class, new UpdateTree(tree));
+			addCommand(NodeModified.class, new UpdateTree(jTree));
 			addCommand(Delete.class, new RemoveNodeCommand());
 		}};
 		resourceTracker = new ResourceFactoryTracker(context);
 		resourceTracker.open();
 	}
 	
-	JTree tree;
 	private JTable table;
 
 	/**
@@ -166,9 +174,8 @@ public class ExplorerIDE implements Runnable {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 		
-		tree = new JcrJTree();
-		tree.setToolTipText("");
-		tree.setModel(new DefaultTreeModel(
+		jTree.setToolTipText("");
+		jTree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("JTree") {
 				{
 					DefaultMutableTreeNode node_1;
@@ -193,7 +200,7 @@ public class ExplorerIDE implements Runnable {
 				}
 			}
 		));
-		scrollPane.setViewportView(tree);
+		scrollPane.setViewportView(jTree);
 		
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -229,7 +236,7 @@ public class ExplorerIDE implements Runnable {
 			ResourceResolverFactory resourceResolverFactory = (ResourceResolverFactory)super.addingService(reference);
 			try {
 				resourceResolver = resourceResolverFactory.getAdministrativeResourceResolver(null);
-				((JcrJTree)tree).configureTree(resourceResolver);
+				((JcrJTree)jTree).configureTree(resourceResolver);
 				table.setModel(model);
 			} catch (Exception e) {
 				log.error(e.getLocalizedMessage());

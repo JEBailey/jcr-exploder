@@ -46,9 +46,9 @@ public class CoreTreeModel implements TreeModel {
 		checkLive();
 		int reply = 0;
 		Resource resource = (Resource) parent;
-		if (resource.isResourceType("nt:file")) {
-			return reply;
-		}
+		//if (resource.isResourceType("nt:file")) {
+		//	return reply;
+		//}
 		Iterator<Resource> it = resource.listChildren();
 		while (it.hasNext()){
 			it.next();
@@ -61,7 +61,7 @@ public class CoreTreeModel implements TreeModel {
 	public boolean isLeaf(Object node) {
 		Resource resource = (Resource)node;
 		checkLive();
-		return resource.isResourceType("nt:file") ? true : !resource.listChildren().hasNext();
+		return !resource.listChildren().hasNext();
 
 	}
 

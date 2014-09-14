@@ -9,15 +9,23 @@ import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import explorer.events.NodeSelected;
 import flack.control.DispatcherDefaultImpl;
 
+@org.apache.felix.scr.annotations.Component(name="JCR Tree Renderer",description="Displays the node based tree")
+@Service(value=JTree.class)
+@Property(name="type", value="updatePane")
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
 
@@ -26,12 +34,11 @@ public class JcrJTree extends JTree {
 		// capable of selecting tree nodes, as well as dismissing the popup.
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
 	}
+	
+	@Reference
+	DefaultTreeCellRenderer jcrTreeNodeRenderer;
 
-	public JcrJTree() {
-		super();
-		init();
-	}
-
+	@Activate
 	private void init() {
 		getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
@@ -91,7 +98,7 @@ public class JcrJTree extends JTree {
 
 	public void configureTree(ResourceResolver resolver) throws Exception {
 		setModel(new CoreTreeModel(resolver));
-		setCellRenderer(new JcrTreeNodeRenderer());
+		setCellRenderer(jcrTreeNodeRenderer);
 		getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override

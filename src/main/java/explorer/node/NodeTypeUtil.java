@@ -11,8 +11,6 @@ public class NodeTypeUtil {
 	
 	public static boolean  isType(Resource resource, String type){
 		
-		Session session = resource.getResourceResolver().adaptTo(Session.class);
-		
 		if (resource.isResourceType(type)){
 			return true;
 		}
@@ -26,6 +24,7 @@ public class NodeTypeUtil {
 			return false;
 		}
 		try {
+			Session session = resource.getResourceResolver().adaptTo(Session.class);
 			reply = session.getWorkspace().getNodeTypeManager().getNodeType(primaryNode).isNodeType(type);
 		} catch (RepositoryException e) {
 			return false;
