@@ -33,9 +33,7 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.commands.RemoveNodeCommand;
 import explorer.commands.UpdateEditorPane;
-import explorer.commands.UpdateTableModel;
 import explorer.commands.UpdateTree;
 import explorer.events.Delete;
 import explorer.events.FindFiles;
@@ -49,13 +47,13 @@ import flack.control.api.EventController;
 
 @Component(description="Swing based explorer",label="Explorer IDE", name="ExplorerIDE")
 public class ExplorerIDE implements Runnable {
-
 	
 	private JFrame frmJcrExploder;
 	
 	private RSyntaxTextArea editorTextArea;
 	
-		
+	ComponentContext componentContext;
+	
 	@SuppressWarnings("unused")
 	private EventController controller;
 
@@ -74,16 +72,25 @@ public class ExplorerIDE implements Runnable {
 	@Reference(target="(type=updatePane)",policy=ReferencePolicy.STATIC)
 	Command updatePane;
 	
+	@Reference(target="(type=removeNode)",policy=ReferencePolicy.STATIC)
+	Command removeNode;
+	
+	@Reference(target="(type=updateTable)",policy=ReferencePolicy.STATIC)
+	Command updateTable;
+	
+	@Reference(target="(type=updateTree)",policy=ReferencePolicy.STATIC)
+	Command updateTree;
+	
 	private void bundleInitialize() {
 		((UpdateEditorPane)updatePane).setEditorPane(editorTextArea);
 		controller = new EventControllerDefaultImpl(){{
 			addCommand(NodeSelected.class, new MultipleCommand(){{
-				add(new UpdateTableModel(tableModel));
+				add(updateTable);
 				add(updatePane);
 			}});
 			addCommand(FindFiles.class, fileImport);
-			addCommand(NodeModified.class, new UpdateTree(jTree));
-			addCommand(Delete.class, new RemoveNodeCommand());
+			addCommand(NodeModified.class, updateTree);
+			addCommand(Delete.class,removeNode);
 		}};
 	}
 	
@@ -156,7 +163,7 @@ public class ExplorerIDE implements Runnable {
 		frmJcrExploder.setJMenuBar(menuBar);
 	}
 	
-	ComponentContext componentContext;
+
 	
 	@Activate
 	public void activate(ComponentContext context) throws Exception{

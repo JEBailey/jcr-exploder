@@ -16,7 +16,7 @@ import explorer.node.NodeTypeUtil;
 import flack.commands.api.Command;
 import flack.control.EventDefaultImpl;
 
-@Component(name="Sling Explorer UI - Update Editor Pane Command",description="Updates the Editor Pane with the correct view")
+@Component(name="Sling Explorer Command - Update Editor Pane ",description="Updates the Editor Pane with the correct view")
 @Service
 @Property(name="type", value="updatePane")
 public class UpdateEditorPane implements Command {
