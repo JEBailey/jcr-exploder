@@ -4,12 +4,23 @@ import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+
 import flack.commands.api.Command;
+import flack.control.api.Dispatcher;
+import flack.control.api.Event;
 import flack.control.api.EventController;
 
+@Component
+@Service
 public class EventControllerDefaultImpl implements EventListener, EventController {
 	
-	private Map<Class<? extends EventDefaultImpl>, Command> commands = new HashMap<Class<? extends EventDefaultImpl>, Command>();
+	@Reference
+	Dispatcher dispatcher;
+	
+	private Map<Class<? extends Event>, Command> commands = new HashMap<Class<? extends Event>, Command>();
 	
 	public EventControllerDefaultImpl() {
 		super();
@@ -19,16 +30,16 @@ public class EventControllerDefaultImpl implements EventListener, EventControlle
 	 * @see flack.control.EventController#addCommand(java.lang.Class, flack.commands.api.Command)
 	 */
 	@Override
-	public void addCommand(Class<? extends EventDefaultImpl>event, Command command) {
+	public void addCommand(Class<? extends Event>event, Command command) {
 		commands.put(event, command);
-		DispatcherDefaultImpl.getInstance().addController(event, this);
+		dispatcher.addController(event, (EventController)this);
 	}
 	
 	/* (non-Javadoc)
 	 * @see flack.control.EventController#executeCommand(flack.control.EventDefaultImpl)
 	 */
-	@Override
-	public void executeCommand(EventDefaultImpl event){
+	
+	public void executeCommand(Event event){
 		Command command = commands.get(event.getClass());
 		if ( command != null) {
 			command.process(event);

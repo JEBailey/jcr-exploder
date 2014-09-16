@@ -1,9 +1,9 @@
 package flack.commands.api;
 
-import flack.control.EventDefaultImpl;
+import flack.control.api.Event;
 
 public interface Command {
 	
-	public void process(EventDefaultImpl event);
+	public void process(Event event);
 
 }

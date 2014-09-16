@@ -8,7 +8,7 @@ import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.table.JcrTableModelImpl;
 import flack.commands.api.Command;
-import flack.control.EventDefaultImpl;
+import flack.control.api.Event;
 
 @Component(name="Sling Explorer Command - Update Table",description="Updates Property Table")
 @Service
@@ -19,7 +19,7 @@ public class UpdateTableModel implements Command {
 	private JcrTableModelImpl table;
 
 	@Override
-	public void process(EventDefaultImpl event) {
+	public void process(Event event) {
 		table.setResource((Resource)event.getData());
 		table.fireTableDataChanged();
 	}

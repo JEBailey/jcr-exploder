@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.commands.UpdateEditorPane;
-import explorer.commands.UpdateTree;
 import explorer.events.Delete;
 import explorer.events.FindFiles;
 import explorer.events.NodeModified;
@@ -45,55 +44,54 @@ import flack.commands.api.MultipleCommand;
 import flack.control.EventControllerDefaultImpl;
 import flack.control.api.EventController;
 
-@Component(description="Swing based explorer",label="Explorer IDE", name="ExplorerIDE")
+@Component(description = "Swing based explorer", label = "Explorer IDE", name = "ExplorerIDE")
 public class ExplorerIDE implements Runnable {
-	
+
 	private JFrame frmJcrExploder;
-	
+
 	private RSyntaxTextArea editorTextArea;
-	
+
 	ComponentContext componentContext;
-	
-	@SuppressWarnings("unused")
+
+	@Reference
 	private EventController controller;
 
-	private static final Logger log = LoggerFactory
-			.getLogger(ExplorerIDE.class);
+	private static final Logger log = LoggerFactory.getLogger(ExplorerIDE.class);
 
 	@Reference
 	JcrTableModelImpl tableModel;
-	
+
 	@Reference
 	JTree jTree;
-	
-	@Reference(target="(type=fileImport)",policy=ReferencePolicy.STATIC)
+
+	@Reference(target = "(type=fileImport)", policy = ReferencePolicy.STATIC)
 	Command fileImport;
-	
-	@Reference(target="(type=updatePane)",policy=ReferencePolicy.STATIC)
+
+	@Reference(target = "(type=updatePane)", policy = ReferencePolicy.STATIC)
 	Command updatePane;
-	
-	@Reference(target="(type=removeNode)",policy=ReferencePolicy.STATIC)
+
+	@Reference(target = "(type=removeNode)", policy = ReferencePolicy.STATIC)
 	Command removeNode;
-	
-	@Reference(target="(type=updateTable)",policy=ReferencePolicy.STATIC)
+
+	@Reference(target = "(type=updateTable)", policy = ReferencePolicy.STATIC)
 	Command updateTable;
-	
-	@Reference(target="(type=updateTree)",policy=ReferencePolicy.STATIC)
+
+	@Reference(target = "(type=updateTree)", policy = ReferencePolicy.STATIC)
 	Command updateTree;
-	
+
 	private void bundleInitialize() {
-		((UpdateEditorPane)updatePane).setEditorPane(editorTextArea);
-		controller = new EventControllerDefaultImpl(){{
-			addCommand(NodeSelected.class, new MultipleCommand(){{
+		((UpdateEditorPane) updatePane).setEditorPane(editorTextArea);
+		controller.addCommand(NodeSelected.class, new MultipleCommand() {
+			{
 				add(updateTable);
 				add(updatePane);
-			}});
-			addCommand(FindFiles.class, fileImport);
-			addCommand(NodeModified.class, updateTree);
-			addCommand(Delete.class,removeNode);
-		}};
+			}
+		});
+		controller.addCommand(FindFiles.class, fileImport);
+		controller.addCommand(NodeModified.class, updateTree);
+		controller.addCommand(Delete.class, removeNode);
 	}
-	
+
 	private JTable table;
 
 	/**
@@ -104,19 +102,19 @@ public class ExplorerIDE implements Runnable {
 		frmJcrExploder.setTitle("Sling Explorer GUI");
 		frmJcrExploder.setBounds(100, 100, 800, 600);
 		frmJcrExploder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setDividerSize(3);
 		frmJcrExploder.getContentPane().add(splitPane, BorderLayout.CENTER);
-		
+
 		JSplitPane splitPane_1 = new JSplitPane();
 		splitPane_1.setDividerSize(4);
 		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setRightComponent(splitPane_1);
-		
+
 		JScrollPane propertiesScrollPane = new JScrollPane();
 		splitPane_1.setRightComponent(propertiesScrollPane);
-		
+
 		table = new JTable();
 		table.setFocusable(false);
 		table.setIntercellSpacing(new Dimension(0, 1));
@@ -125,48 +123,44 @@ public class ExplorerIDE implements Runnable {
 		table.setModel(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		propertiesScrollPane.setViewportView(table);
-		
+
 		JTabbedPane editorTab = new JTabbedPane(JTabbedPane.TOP);
 		splitPane_1.setLeftComponent(editorTab);
-		
-		
+
 		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
 		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
-		
+
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
 		editorTab.addTab("New tab", null, editorScrollPane, null);
-		
+
 		editorTextArea.setText("public static void main(String[] args) {\n}");
 		splitPane_1.setDividerLocation(400);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
-		
 
 		scrollPane.setViewportView(jTree);
-		
+
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		scrollPane.setColumnHeaderView(panel);
-		
+
 		JButton button = new JButton("+");
 		button.setToolTipText("expand all");
 		button.setContentAreaFilled(false);
 		button.setBorder(new CompoundBorder());
 		panel.add(button);
 		splitPane.setDividerLocation(120);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frmJcrExploder.setJMenuBar(menuBar);
 	}
-	
 
-	
 	@Activate
-	public void activate(ComponentContext context) throws Exception{
+	public void activate(ComponentContext context) throws Exception {
 		this.componentContext = context;
 		try {
 			javax.swing.SwingUtilities.invokeAndWait(this);
@@ -175,13 +169,13 @@ public class ExplorerIDE implements Runnable {
 			throw ex;
 		}
 	}
-	
+
 	@Deactivate
-	public void deactivate() throws Exception{
+	public void deactivate() throws Exception {
 		UIManager.put("RTextAreaUI.actionMap", null);
 		UIManager.put("RSyntaxTextAreaUI.actionMap", null);
 		JTextComponent.removeKeymap("RTextAreaKeymap");
-		
+
 		frmJcrExploder.setVisible(false);
 		frmJcrExploder.dispose();
 		frmJcrExploder = null;
@@ -200,6 +194,5 @@ public class ExplorerIDE implements Runnable {
 		frmJcrExploder.setVisible(true);
 		log.info("application is running");
 	}
-
 
 }

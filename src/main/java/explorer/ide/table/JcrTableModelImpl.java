@@ -74,9 +74,6 @@ public class JcrTableModelImpl extends AbstractTableModel {
 				} else {
 					Class<?> klass = map.get(propertyNames[rowIndex]).getClass();
 					reply.append(klass.getSimpleName());
-					if (klass.isArray()) {
-						reply.append("[]");
-					}
 				}
 				break;
 			case 2:

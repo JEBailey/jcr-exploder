@@ -15,13 +15,12 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 
 import explorer.events.NodeSelected;
-import flack.control.DispatcherDefaultImpl;
+import flack.control.api.Dispatcher;
 
 @org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Renderer",description="Displays the node based tree")
 @Service(value=JTree.class)
@@ -39,13 +38,19 @@ public class JcrJTree extends JTree {
 	
 	@Reference
 	TreeModel treeModel;
+	
+	@Reference
+	Dispatcher dispatcher;
+	
+	@Reference
+	RightClickMenu rightClick;
 
 	@Activate
 	private void activate() {
 		getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
 
-			private JPopupMenu menu = new RightClickMenu(JcrJTree.this);
+			private JPopupMenu menu = rightClick;
 
 			public void mousePressed(MouseEvent e) {
 				showMenuIfPopupTrigger(e);
@@ -110,7 +115,7 @@ public class JcrJTree extends JTree {
 			public void valueChanged(TreeSelectionEvent e) {
 				Resource treeNode = (Resource) getLastSelectedPathComponent();
 				if (treeNode != null) {
-					DispatcherDefaultImpl.getInstance().dispatchEvent(new NodeSelected(this, treeNode));
+					dispatcher.dispatchEvent(new NodeSelected(this, treeNode));
 					// TODO: handle a null selection which occurs when a
 					// selection is deleted.
 					// this should be passed into the handler which then

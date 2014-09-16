@@ -63,7 +63,7 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 							type = base;
 						}
 					}
-				} else if (NodeTypeUtil.isType(resource,"nt:unstructured")){
+				} else {
 					type = Type.node_select_child;
 				}
 			} catch (Exception e) {

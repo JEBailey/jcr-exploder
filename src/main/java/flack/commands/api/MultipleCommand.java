@@ -3,7 +3,7 @@ package flack.commands.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import flack.control.EventDefaultImpl;
+import flack.control.api.Event;
 
 /**
  * Allows for multiple commands to be invoked, one
@@ -22,7 +22,7 @@ public class MultipleCommand implements Command {
 	
 
 	@Override
-	public void process(EventDefaultImpl event) {
+	public void process(Event event) {
 		for (Command command:list){
 			command.process(event);
 		}

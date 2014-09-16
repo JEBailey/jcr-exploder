@@ -11,20 +11,24 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 
 import explorer.events.FindFiles;
-import flack.control.DispatcherDefaultImpl;
+import flack.control.api.Dispatcher;
 
+@Component(name="Sling Explorer UI - Tree Menu")
+@Service(value=RightClickMenu.class)
 @SuppressWarnings("serial")
 public class RightClickMenu extends JPopupMenu {
 
-	JTree tree;
 
-	public RightClickMenu(JTree tree) {
-		super();
-		this.tree = tree;
-	}
+	@Reference
+	Dispatcher dispatcher;
+	
+	JTree tree;
 
 	JMenuItem mntmCopy = new JMenuItem("Copy");
 	JMenuItem mntmPaste = new JMenuItem("Paste");
@@ -41,7 +45,7 @@ public class RightClickMenu extends JPopupMenu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Resource treeNode = (Resource) tree.getLastSelectedPathComponent();
-				DispatcherDefaultImpl.getInstance().dispatchEvent(new FindFiles(this, treeNode));
+			    dispatcher.dispatchEvent(new FindFiles(this, treeNode));
 			}
 		});
 

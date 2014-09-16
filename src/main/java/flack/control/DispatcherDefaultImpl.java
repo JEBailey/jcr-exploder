@@ -7,34 +7,33 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+
 import flack.control.api.Dispatcher;
+import flack.control.api.Event;
 import flack.control.api.EventController;
 
+@Component(name="Dispatcher - Default Impl")
+@Service
 public class DispatcherDefaultImpl implements Dispatcher {
 
-	private static Dispatcher instance;
-
-	private Map<Class<?>, List<EventControllerDefaultImpl>> handlers;
-
-	public static Dispatcher getInstance() {
-		if (instance == null) {
-			instance = new DispatcherDefaultImpl();
-		}
-		return instance;
-	}
+	List<EventController> eventControllers;
+	
+	private Map<Class<?>, List<EventController>> handlers;
 
 	public DispatcherDefaultImpl() {
-		handlers = new HashMap<Class<?>, List<EventControllerDefaultImpl>>();
+		handlers = new HashMap<Class<?>, List<EventController>>();
 	}
 
 	/* (non-Javadoc)
 	 * @see flack.control.Dispatcher#addController(java.lang.Class, flack.control.EventControllerDefaultImpl)
 	 */
-	@Override
-	public void addController(Class<?> type, EventControllerDefaultImpl listener) {
-		List<EventControllerDefaultImpl> listeners = handlers.get(type);
+	
+	public void addController(Class<?> type, EventController listener) {
+		List<EventController> listeners = handlers.get(type);
 		if (listeners == null) {
-			listeners = new ArrayList<EventControllerDefaultImpl>();
+			listeners = new ArrayList<EventController>();
 			handlers.put(type, listeners);
 		}
 		listeners.add(listener);
@@ -43,9 +42,8 @@ public class DispatcherDefaultImpl implements Dispatcher {
 	/* (non-Javadoc)
 	 * @see flack.control.Dispatcher#removeController(java.lang.Class, flack.control.EventControllerDefaultImpl)
 	 */
-	@Override
 	public boolean removeController(Class<?> type, EventController listener) {
-		List<EventControllerDefaultImpl> listeners = handlers.get(type);
+		List<EventController> listeners = handlers.get(type);
 		if (listeners != null) {
 			return listeners.remove(listener);
 		}
@@ -55,9 +53,9 @@ public class DispatcherDefaultImpl implements Dispatcher {
 	/* (non-Javadoc)
 	 * @see flack.control.Dispatcher#dispatchEvent(flack.control.EventDefaultImpl)
 	 */
-	@Override
-	public boolean dispatchEvent(EventDefaultImpl event) {
-		List<EventControllerDefaultImpl> listeners = handlers.get(event.getClass());
+	
+	public boolean dispatchEvent(Event event) {
+		List<EventController> listeners = handlers.get(event.getClass());
 		for (EventController listener:listeners){
 			listener.executeCommand(event);
 		}
@@ -69,12 +67,11 @@ public class DispatcherDefaultImpl implements Dispatcher {
 	 * @see flack.control.Dispatcher#asynchEvent(flack.control.EventDefaultImpl)
 	 */
 	@Override
-	public void asynchEvent(final EventDefaultImpl event) {
+	public void asynchEvent(final Event event) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				DispatcherDefaultImpl.getInstance().dispatchEvent(event);
-				
+				dispatchEvent(event);
 			}
 		});
 	}

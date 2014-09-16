@@ -10,7 +10,7 @@ import org.apache.sling.api.resource.Resource;
 
 import explorer.ide.tree.CoreTreeModel;
 import flack.commands.api.Command;
-import flack.control.EventDefaultImpl;
+import flack.control.api.Event;
 
 @Component(name="Sling Explorer Command - Update Tree",description="Updates Resource Tree")
 @Service
@@ -21,7 +21,7 @@ public class UpdateTree implements Command {
 	private JTree tree;
 
 	@Override
-	public void process(EventDefaultImpl event) {
+	public void process(Event event) {
 		Resource treeNode = (Resource)event.getData();
 		CoreTreeModel model = (CoreTreeModel)tree.getModel();
 		model.updateStructure(treeNode);

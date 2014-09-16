@@ -14,7 +14,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import explorer.node.NodeTypeUtil;
 import flack.commands.api.Command;
-import flack.control.EventDefaultImpl;
+import flack.control.api.Event;
 
 @Component(name="Sling Explorer Command - Update Editor Pane ",description="Updates the Editor Pane with the correct view")
 @Service
@@ -31,7 +31,7 @@ public class UpdateEditorPane implements Command {
 	}
 
 	@Override
-	public void process(EventDefaultImpl event) {
+	public void process(Event event) {
 		Resource resource = (Resource)event.getData();
 		ResourceMetadata metaData = resource.getResourceMetadata();
 		String prop = null;

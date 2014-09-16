@@ -9,23 +9,19 @@ import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.JFileChooser;
+import javax.swing.JTree;
 
-import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.mime.MimeTypeService;
-import org.osgi.framework.BundleContext;
-import org.osgi.util.tracker.ServiceTracker;
 
 import explorer.events.NodeModified;
 import flack.commands.api.Command;
-import flack.control.DispatcherDefaultImpl;
-import flack.control.EventDefaultImpl;
 import flack.control.api.Dispatcher;
+import flack.control.api.Event;
 
 @Component(name="Sling Explorer Command - File Import",description="Provides the UI to import a file or files")
 @Service
@@ -33,23 +29,14 @@ import flack.control.api.Dispatcher;
 public class FileImport implements Command {
 
 	@Reference
-	private MimeTypeService mime;
+	private MimeTypeService mimes;
 	
-	private ServiceTracker mimeTypeTracker;
+	@Reference
+	private Dispatcher dispatcher;
 	
-	private Dispatcher dispatcher = DispatcherDefaultImpl.getInstance();
-	
-	@Activate
-	public void activate(BundleContext context) {
-
-	}
-	
-	@Deactivate
-	public void deactivate(){
-	}
 
 	@Override
-	public void process(EventDefaultImpl event) {
+	public void process(Event event) {
 		Resource resource = (Resource)event.getData();
 		Node node = resource.adaptTo(Node.class);
 		final JFileChooser fc = new JFileChooser();
@@ -74,9 +61,8 @@ public class FileImport implements Command {
 
 	public Node importFile(Node parentnode, File file)
 			throws RepositoryException, IOException {
-		MimeTypeService mimeType = (MimeTypeService) mimeTypeTracker
-				.getService();
-		String mimeTypes = mimeType.getMimeType(file.getName());
+
+		String mimeTypes = mimes.getMimeType(file.getName());
 		Node fileNode = parentnode.addNode(file.getName(), "nt:file");
 		Node resNode = fileNode.addNode("jcr:content", "nt:resource");
 		resNode.setProperty("jcr:mimeType", mimeTypes);

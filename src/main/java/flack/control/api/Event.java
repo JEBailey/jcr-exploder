@@ -6,4 +6,6 @@ public interface Event {
 
 	public abstract void setData(Object data);
 
+	public abstract Object getSource();
+
 }
