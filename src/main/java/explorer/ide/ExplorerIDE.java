@@ -38,6 +38,7 @@ import explorer.events.Delete;
 import explorer.events.FindFiles;
 import explorer.events.NodeModified;
 import explorer.events.NodeSelected;
+import explorer.events.ShowMenu;
 import explorer.ide.table.JcrTableModelImpl;
 import flack.commands.api.Command;
 import flack.commands.api.MultipleCommand;
@@ -78,6 +79,9 @@ public class ExplorerIDE implements Runnable {
 
 	@Reference(target = "(type=updateTree)", policy = ReferencePolicy.STATIC)
 	Command updateTree;
+	
+	@Reference(target = "(type=displayMenu)", policy = ReferencePolicy.STATIC)
+	Command displayMenu;
 
 	private void bundleInitialize() {
 		((UpdateEditorPane) updatePane).setEditorPane(editorTextArea);
@@ -90,6 +94,7 @@ public class ExplorerIDE implements Runnable {
 		controller.addCommand(FindFiles.class, fileImport);
 		controller.addCommand(NodeModified.class, updateTree);
 		controller.addCommand(Delete.class, removeNode);
+		controller.addCommand(ShowMenu.class, displayMenu);
 	}
 
 	private JTable table;

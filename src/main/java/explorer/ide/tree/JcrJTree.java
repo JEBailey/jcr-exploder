@@ -1,6 +1,7 @@
 package explorer.ide.tree;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -20,10 +21,11 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 
 import explorer.events.NodeSelected;
+import explorer.events.ShowMenu;
 import flack.control.api.Dispatcher;
 
-@org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Renderer",description="Displays the node based tree")
-@Service(value=JTree.class)
+@org.apache.felix.scr.annotations.Component(name = "Sling Explorer UI - Tree Renderer", description = "Displays the node based tree")
+@Service(value = JTree.class)
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
 
@@ -32,25 +34,20 @@ public class JcrJTree extends JTree {
 		// capable of selecting tree nodes, as well as dismissing the popup.
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
 	}
-	
+
 	@Reference
 	DefaultTreeCellRenderer jcrTreeNodeRenderer;
-	
+
 	@Reference
 	TreeModel treeModel;
-	
+
 	@Reference
 	Dispatcher dispatcher;
-	
-	@Reference
-	RightClickMenu rightClick;
 
 	@Activate
 	private void activate() {
 		getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
-
-			private JPopupMenu menu = rightClick;
 
 			public void mousePressed(MouseEvent e) {
 				showMenuIfPopupTrigger(e);
@@ -68,9 +65,8 @@ public class JcrJTree extends JTree {
 				if (e.isPopupTrigger()) {
 					// set the new selections before showing the popup
 					setSelectedItemsOnPopupTrigger(e);
-
-					// show the menu, offsetting from the mouse click slightly
-					menu.show((Component) e.getSource(), e.getX() + 3, e.getY() + 3);
+					Point menuLocation = new Point(e.getX() + 3, e.getY() + 3);
+					dispatcher.dispatchEvent(new ShowMenu((Component) e.getSource(), menuLocation));
 				}
 			}
 
@@ -90,8 +86,10 @@ public class JcrJTree extends JTree {
 			}
 		});
 		setCellRenderer(jcrTreeNodeRenderer);
+		setModel(treeModel);
+
 		setToolTipText("");
-		configureTree();
+		addTreeSelectiionListeners();
 	}
 
 	@Override
@@ -99,27 +97,22 @@ public class JcrJTree extends JTree {
 			boolean hasFocus) {
 		if (value != null) {
 			if (value instanceof Resource) {
-				Resource node = (Resource) value;
-				return node.getName();
+				Resource resource = (Resource) value;
+				return resource.getName();
 			}
 		}
 		return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
 	}
 
-	private void configureTree() {
-		setModel(treeModel);
+	private void addTreeSelectiionListeners() {
 
 		getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Resource treeNode = (Resource) getLastSelectedPathComponent();
-				if (treeNode != null) {
-					dispatcher.dispatchEvent(new NodeSelected(this, treeNode));
-					// TODO: handle a null selection which occurs when a
-					// selection is deleted.
-					// this should be passed into the handler which then
-					// displays a default view
+				Resource resource = (Resource) getLastSelectedPathComponent();
+				if (resource != null) {
+					dispatcher.dispatchEvent(new NodeSelected(this, resource));
 				}
 			}
 

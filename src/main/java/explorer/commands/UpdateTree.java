@@ -1,6 +1,6 @@
 package explorer.commands;
 
-import javax.swing.JTree;
+import javax.swing.tree.TreeModel;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -18,13 +18,13 @@ import flack.control.api.Event;
 public class UpdateTree implements Command {
 	
 	@Reference
-	private JTree tree;
+	private TreeModel model;
 
 	@Override
 	public void process(Event event) {
 		Resource treeNode = (Resource)event.getData();
-		CoreTreeModel model = (CoreTreeModel)tree.getModel();
-		model.updateStructure(treeNode);
+		//CoreTreeModel model = (CoreTreeModel)tree.getModel();
+		//model.updateStructure(treeNode);
 
 		//model.nodeStructureChanged(treeNode);
 		//tree.expandRow(tree.getRowForPath(new TreePath(treeNode.getPath())));

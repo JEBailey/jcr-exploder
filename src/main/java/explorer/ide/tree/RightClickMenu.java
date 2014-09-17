@@ -3,10 +3,6 @@ package explorer.ide.tree;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -28,7 +24,14 @@ public class RightClickMenu extends JPopupMenu {
 	@Reference
 	Dispatcher dispatcher;
 	
+	@Reference
 	JTree tree;
+	
+	Resource resource;
+	
+	public void setResource(Resource resource){
+		this.resource = resource;
+	}
 
 	JMenuItem mntmCopy = new JMenuItem("Copy");
 	JMenuItem mntmPaste = new JMenuItem("Paste");
@@ -44,8 +47,7 @@ public class RightClickMenu extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Resource treeNode = (Resource) tree.getLastSelectedPathComponent();
-			    dispatcher.dispatchEvent(new FindFiles(this, treeNode));
+			    dispatcher.dispatchEvent(new FindFiles(this, resource));
 			}
 		});
 
@@ -53,23 +55,10 @@ public class RightClickMenu extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Node treeNode = (Node) tree.getLastSelectedPathComponent();
-				try {
-					Node parentNode = treeNode.getParent();
-					treeNode.remove();
-					parentNode.getSession().save();
-					((CoreTreeModel) tree.getModel()).updateStructure(null);
-				} catch (AccessDeniedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ItemNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (RepositoryException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
+					//Node parentNode = treeNode.getParent();
+					//treeNode.remove();
+					//parentNode.getSession().save();
+					//((CoreTreeModel) tree.getModel()).updateStructure(null);
 			}
 		});
 

@@ -97,7 +97,12 @@ public class JcrTableModelImpl extends AbstractTableModel {
 						}
 					}
 				} else {
-					reply.append(map.get(propertyNames[rowIndex], String.class));
+					if (map.get(propertyNames[rowIndex]).getClass().isArray()){
+						Object[] values = (Object[]) map.get(propertyNames[rowIndex]);
+						reply.append(map.get(propertyNames[rowIndex],Arrays.toString(values)));
+					} else {
+						reply.append(map.get(propertyNames[rowIndex], String.class));
+					}
 				}
 			}
 
