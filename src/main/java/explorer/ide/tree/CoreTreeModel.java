@@ -19,7 +19,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 
-@Component(name="Tree Model",description="Models resource tree")
+@Component(name="Sling Explorer UI - Tree Model",description="Models resource tree")
 @Service
 public class CoreTreeModel implements TreeModel {
 
@@ -40,7 +40,6 @@ public class CoreTreeModel implements TreeModel {
 	@Deactivate
 	private void deactivate(){
 		resourceResolver.close();
-		session.logout();
 	}
 	
 

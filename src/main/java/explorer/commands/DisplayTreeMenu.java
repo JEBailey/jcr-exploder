@@ -22,7 +22,7 @@ public class DisplayTreeMenu implements Command {
 	@Override
 	public void process(Event event) {
 		Point e = (Point)event.getData();
-		menu.show((java.awt.Component) event.getSource(),(int) e.getX() + 3,(int) e.getY() + 3);
+		menu.show((java.awt.Component) event.getSource(),(int) e.getX(),(int) e.getY());
 	}
 
 }

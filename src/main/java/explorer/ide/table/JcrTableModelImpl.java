@@ -33,11 +33,15 @@ public class JcrTableModelImpl extends AbstractTableModel {
 	public void setResource(Resource resource) {
 		this.resource = resource;
 		this.map = ResourceUtil.getValueMap(resource);
+		if (map.size() == 0){
+			map.put("sling:resourceType", resource.getResourceType());
+		}
 		Object[] keys = map.keySet().toArray();
 		this.propertyNames = new String[Array.getLength(keys)];
 		for (int i = 0; i < keys.length; ++i) {
 			propertyNames[i] = keys[i].toString();
 		}
+
 		Arrays.sort(propertyNames);
 	}
 
