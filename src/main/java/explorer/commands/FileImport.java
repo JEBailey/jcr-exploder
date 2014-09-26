@@ -1,15 +1,18 @@
 package explorer.commands;
 
+import static org.osgi.service.event.EventConstants.EVENT_TOPIC;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.JFileChooser;
-import javax.swing.JTree;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
@@ -17,47 +20,21 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.mime.MimeTypeService;
-
-import explorer.events.NodeModified;
-import flack.commands.api.Command;
-import flack.control.api.Dispatcher;
-import flack.control.api.Event;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventHandler;
 
 @Component(name="Sling Explorer Command - File Import",description="Provides the UI to import a file or files")
 @Service
-@Property(name="type", value="fileImport")
-public class FileImport implements Command {
+@Property(name=EVENT_TOPIC, value="explorer/gui/IMPORT_FILE")
+public class FileImport implements EventHandler {
 
 	@Reference
 	private MimeTypeService mimes;
 	
 	@Reference
-	private Dispatcher dispatcher;
+	private EventAdmin eventQueue;
 	
-
-	@Override
-	public void process(Event event) {
-		Resource resource = (Resource)event.getData();
-		Node node = resource.adaptTo(Node.class);
-		final JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {	
-			try {
-				if (node.isNodeType("nt:folder")){
-					File file = fc.getSelectedFile();
-					if (file.isFile()){
-						Node fileNode = importFile(node,file);
-						dispatcher.asynchEvent(new NodeModified(event.getSource(), fileNode));
-					} else if (file.isDirectory()){
-						importFolder(node, file);
-					}
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			} 
-		}
-
-	}
 
 	public Node importFile(Node parentnode, File file)
 			throws RepositoryException, IOException {
@@ -94,5 +71,34 @@ public class FileImport implements Command {
 		}
 
 	}
+
+	@Override
+	public void handleEvent(final Event event) {
+		Resource resource = (Resource)event.getProperty("resource");
+		Node node = resource.adaptTo(Node.class);
+		final JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {	
+			try {
+				if (node.isNodeType("nt:folder")){
+					File file = fc.getSelectedFile();
+					if (file.isFile()){
+						Node fileNode = importFile(node,file);
+						Dictionary<String,Object> props = new Hashtable<String,Object>();
+						props.put("source", event.getProperty("source"));
+						props.put("path",fileNode.getPath());
+						eventQueue.postEvent(new Event("explorer/gui/RESOURCE_MODIFIED",props));
+					} else if (file.isDirectory()){
+						importFolder(node, file);
+					}
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} 
+		}
+		
+	}
+
+
 
 }

@@ -1,11 +1,10 @@
 package explorer.ide.tree;
 
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
@@ -19,10 +18,11 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
-import explorer.events.NodeSelected;
-import explorer.events.ShowMenu;
-import flack.control.api.Dispatcher;
+import explorer.ide.EventTypes;
+import explorer.ide.UIEvent;
 
 @org.apache.felix.scr.annotations.Component(name = "Sling Explorer UI - Tree Renderer", description = "Displays the node based tree")
 @Service(value = JTree.class)
@@ -42,7 +42,7 @@ public class JcrJTree extends JTree {
 	TreeModel treeModel;
 
 	@Reference
-	Dispatcher dispatcher;
+	EventAdmin eventAdmin;
 
 	@Activate
 	private void activate() {
@@ -65,8 +65,13 @@ public class JcrJTree extends JTree {
 				if (e.isPopupTrigger()) {
 					// set the new selections before showing the popup
 					setSelectedItemsOnPopupTrigger(e);
-					Point menuLocation = new Point(e.getX() + 3, e.getY() + 3);
-					dispatcher.dispatchEvent(new ShowMenu((Component) e.getSource(), menuLocation));
+					eventAdmin.postEvent(new Event(EventTypes.SHOW_TREE_MENU, new HashMap<String, Object>() {
+						{
+							Point menuLocation = new Point(e.getX() + 3, e.getY() + 3);
+							put("source", e.getSource());
+							put("data", menuLocation);
+						}
+					}));
 				}
 			}
 
@@ -110,9 +115,8 @@ public class JcrJTree extends JTree {
 
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Resource resource = (Resource) getLastSelectedPathComponent();
-				if (resource != null) {
-					dispatcher.dispatchEvent(new NodeSelected(this, resource));
+				if (getLastSelectedPathComponent() != null) {
+					eventAdmin.postEvent(new UIEvent(EventTypes.NEW_SELECTION, this, getLastSelectedPathComponent()));
 				}
 			}
 

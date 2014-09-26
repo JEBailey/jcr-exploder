@@ -11,6 +11,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.commons.mime.MimeTypeService;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.osgi.framework.FrameworkUtil;
 
 import explorer.node.NodeTypeUtil;
 import flack.commands.api.Command;

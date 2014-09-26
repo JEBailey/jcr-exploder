@@ -25,7 +25,6 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -33,19 +32,10 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.commands.UpdateEditorPane;
-import explorer.events.Delete;
-import explorer.events.FindFiles;
-import explorer.events.NodeModified;
-import explorer.events.NodeSelected;
-import explorer.events.ShowMenu;
 import explorer.ide.table.JcrTableModelImpl;
-import flack.commands.api.Command;
-import flack.commands.api.MultipleCommand;
-import flack.control.EventControllerDefaultImpl;
 import flack.control.api.EventController;
 
-@Component(description = "Swing based explorer", label = "Explorer IDE", name = "ExplorerIDE")
+@Component(description = "Swing based Sling explorer", label = "Sling Explorer IDE", name = "ExplorerIDE")
 public class ExplorerIDE implements Runnable {
 
 	private JFrame frmJcrExploder;
@@ -60,41 +50,14 @@ public class ExplorerIDE implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(ExplorerIDE.class);
 
 	@Reference
-	JcrTableModelImpl tableModel;
+	private JcrTableModelImpl tableModel;
 
 	@Reference
-	JTree jTree;
+	private JTree jTree;
 
-	@Reference(target = "(type=fileImport)", policy = ReferencePolicy.STATIC)
-	Command fileImport;
-
-	@Reference(target = "(type=updatePane)", policy = ReferencePolicy.STATIC)
-	Command updatePane;
-
-	@Reference(target = "(type=removeNode)", policy = ReferencePolicy.STATIC)
-	Command removeNode;
-
-	@Reference(target = "(type=updateTable)", policy = ReferencePolicy.STATIC)
-	Command updateTable;
-
-	@Reference(target = "(type=updateTree)", policy = ReferencePolicy.STATIC)
-	Command updateTree;
-	
-	@Reference(target = "(type=displayMenu)", policy = ReferencePolicy.STATIC)
-	Command displayMenu;
 
 	private void bundleInitialize() {
-		((UpdateEditorPane) updatePane).setEditorPane(editorTextArea);
-		controller.addCommand(NodeSelected.class, new MultipleCommand() {
-			{
-				add(updateTable);
-				add(updatePane);
-			}
-		});
-		controller.addCommand(FindFiles.class, fileImport);
-		controller.addCommand(NodeModified.class, updateTree);
-		controller.addCommand(Delete.class, removeNode);
-		controller.addCommand(ShowMenu.class, displayMenu);
+		//((UpdateEditorPane) updatePane).setEditorPane(editorTextArea);
 	}
 
 	private JTable table;
@@ -189,7 +152,6 @@ public class ExplorerIDE implements Runnable {
 	@Override
 	public void run() {
 		initialize();
-		bundleInitialize();
 		frmJcrExploder.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmJcrExploder.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
