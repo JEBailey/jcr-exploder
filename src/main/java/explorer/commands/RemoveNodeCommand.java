@@ -7,24 +7,17 @@ import javax.jcr.RepositoryException;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-
-import flack.commands.api.Command;
-import flack.control.api.Dispatcher;
-import flack.control.api.Event;
+import org.osgi.service.event.EventHandler;
 
 @Component(name="Sling Explorer Command - Remove Resource",description="Comamnd to remove a resource")
 @Service
 @Property(name="type", value="removeNode")
-public class RemoveNodeCommand implements Command {
+public class RemoveNodeCommand implements EventHandler {
 
-	@Reference
-	private Dispatcher dispatcher;// = DispatcherDefaultImpl.getInstance();
 	
-	@Override
-	public void process(Event event) {
-		Node node = (Node)event.getData();
+	public void process(Object event) {
+		Node node = null;//(Node)event.getData();
 		try {
 			Node parentNode = node.getParent();
 			node.remove();
@@ -39,6 +32,12 @@ public class RemoveNodeCommand implements Command {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void handleEvent(org.osgi.service.event.Event arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

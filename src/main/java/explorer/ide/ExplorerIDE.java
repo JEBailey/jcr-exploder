@@ -13,7 +13,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
@@ -25,15 +24,11 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.ide.table.JcrTableModelImpl;
-import flack.control.api.EventController;
 
 @Component(description = "Swing based Sling explorer", label = "Sling Explorer IDE", name = "ExplorerIDE")
 public class ExplorerIDE implements Runnable {
@@ -41,9 +36,6 @@ public class ExplorerIDE implements Runnable {
 	private JFrame frmJcrExploder;
 
 	private ComponentContext componentContext;
-
-	@Reference
-	private EventController controller;
 
 	private static final Logger log = LoggerFactory.getLogger(ExplorerIDE.class);
 

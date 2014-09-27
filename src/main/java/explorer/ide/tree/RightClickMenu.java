@@ -12,17 +12,11 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 
-import explorer.events.FindFiles;
-import flack.control.api.Dispatcher;
-
 @Component(name="Sling Explorer UI - Tree Menu")
 @Service(value=RightClickMenu.class)
 @SuppressWarnings("serial")
 public class RightClickMenu extends JPopupMenu {
 
-
-	@Reference
-	Dispatcher dispatcher;
 	
 	@Reference
 	JTree tree;
@@ -47,7 +41,8 @@ public class RightClickMenu extends JPopupMenu {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			    dispatcher.dispatchEvent(new FindFiles(this, resource));
+				//TODO:
+			    //dispatcher.dispatchEvent(new FindFiles(this, resource));
 			}
 		});
 
