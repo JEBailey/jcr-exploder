@@ -40,9 +40,7 @@ public class ExplorerIDE implements Runnable {
 
 	private JFrame frmJcrExploder;
 
-	private RSyntaxTextArea editorTextArea;
-
-	ComponentContext componentContext;
+	private ComponentContext componentContext;
 
 	@Reference
 	private EventController controller;
@@ -54,11 +52,9 @@ public class ExplorerIDE implements Runnable {
 
 	@Reference
 	private JTree jTree;
-
-
-	private void bundleInitialize() {
-		//((UpdateEditorPane) updatePane).setEditorPane(editorTextArea);
-	}
+	
+	@Reference
+	private TabEditor editorTab;
 
 	private JTable table;
 
@@ -92,18 +88,7 @@ public class ExplorerIDE implements Runnable {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		propertiesScrollPane.setViewportView(table);
 
-		JTabbedPane editorTab = new JTabbedPane(JTabbedPane.TOP);
 		splitPane_1.setLeftComponent(editorTab);
-
-		editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
-		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		editorTextArea.setAntiAliasingEnabled(true);
-		editorTextArea.setEditable(true);
-
-		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
-		editorTab.addTab("New tab", null, editorScrollPane, null);
-
-		editorTextArea.setText("public static void main(String[] args) {\n}");
 		splitPane_1.setDividerLocation(400);
 
 		JScrollPane scrollPane = new JScrollPane();

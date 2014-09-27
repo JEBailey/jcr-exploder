@@ -5,6 +5,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.observation.EventIterator;
+import javax.jcr.observation.ObservationManager;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
@@ -15,12 +20,14 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
+import explorer.core.api.SessionProvider;
 import explorer.ide.EventTypes;
 import explorer.ide.UIEvent;
 
@@ -44,8 +51,13 @@ public class JcrJTree extends JTree {
 	@Reference
 	EventAdmin eventAdmin;
 
+	@Reference
+	SessionProvider provider;
+
+	ObservationManager observer;
+
 	@Activate
-	private void activate() {
+	private void activate() throws UnsupportedRepositoryOperationException, RepositoryException {
 		getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		addMouseListener(new MouseAdapter() {
 
@@ -95,6 +107,21 @@ public class JcrJTree extends JTree {
 
 		setToolTipText("");
 		addTreeSelectiionListeners();
+
+		Session session = provider.getSession("key");
+		// Listen for changes to our orders
+		observer = session.getWorkspace().getObservationManager();
+		final String path = "/";
+		int events = javax.jcr.observation.Event.PROPERTY_ADDED|javax.jcr.observation.Event.NODE_ADDED;
+		//observer.addEventListener(this, javax.jcr.observation.Event.NODE_ADDED, path, true, null, null, false);
+
+	}
+	
+	@Deactivate
+	public void deactivate() throws RepositoryException{
+		if(observer != null) {
+			//observer.removeEventListener(this);
+        }
 	}
 
 	@Override
@@ -123,5 +150,7 @@ public class JcrJTree extends JTree {
 		});
 
 	}
+
+
 
 }
