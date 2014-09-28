@@ -79,19 +79,8 @@
 						<Bundle-Activator>explorer.ide.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
-						<Bundle-ClassPath>.,lib/rsyntaxtextarea-2.0.2.jar</Bundle-ClassPath>
+						<Bundle-ClassPath>.,lib/rsyntaxtextarea.jar</Bundle-ClassPath>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
-						<!-- Inserting content into the JCR and installing some files on the 
-							server with your bundle. Sling-Initial-Content The first line will overwrite 
-							the contents of the node at content/osgitest with test.json NOTE: uninstall:=false 
-							says that it will not remove the content when I remove the package. This 
-							could be set to true to also remove the content when the package is removed 
-							the choice is yours. The second line will overwrite the path will install 
-							the files and overwrite them if you re-install. -->
-						<!-- <Sling-Initial-Content>
-							SLING-INF/initial-content/content/tools;path:=/content/tools;overwrite:=true;uninstall:=true,
-							SLING-INF/initial-content/apps/sas/pageMaker;path:=/apps/sas/pageMaker;overwrite:=true;uninstall:=true,
-						</Sling-Initial-Content> -->
 					</instructions>
 				</configuration>
 			</plugin>

@@ -81,11 +81,12 @@ public class UpdateEditorPane implements EventHandler {
 
 	private java.awt.Component addEditor(String title,String content, String syntax) {
 		RSyntaxTextArea editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
-		editorTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
 		editorTextArea.setText(content);
 		editorTextArea.setCaretPosition(0);
+		editorTextArea.setCodeFoldingEnabled(true);
+		editorTextArea.setEditable(true);
 		editorTextArea.setSyntaxEditingStyle(syntax);
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
 
