@@ -46,25 +46,20 @@ public class UpdateEditorPane implements EventHandler {
 		if (view != null) {
 			editor.setSelectedComponent((java.awt.Component) view);
 			return;
+		} else {
+			editor.setSelectedIndex(-1);
 		}
 
-		String reply = "";
 		String syntax = mimeType(resource);
 
-		if (syntax.contains("text") || syntax.contains("application")) {
-			try {
-				InputStream prop2 = resource.adaptTo(InputStream.class);
-				byte[] temp = new byte[(int) prop2.available()];
-
-				prop2.read(temp);
-				reply = new String(temp);
-			} catch (IOException e) {
-				reply = "problem reading stream";
-			}
-		} else {
+		if (!(syntax.contains("text") || syntax.contains("application"))) {
 			return;
 		}
-		tabs.put(resource.getPath(), addEditor(resource.getName(),reply, syntax));
+		
+		java.awt.Component component = addEditor(resource, syntax);
+		editor.addTab(resource.getName(), null, component, null);
+		editor.setSelectedComponent(component);
+		tabs.put(resource.getPath(),component);
 	}
 
 	private String mimeType(Resource resource) {
@@ -79,7 +74,18 @@ public class UpdateEditorPane implements EventHandler {
 		return prop.replace("application/", "text/");
 	}
 
-	private java.awt.Component addEditor(String title,String content, String syntax) {
+	private java.awt.Component addEditor(Resource resource, String syntax) {
+		String content = "";
+		try {
+			InputStream prop2 = resource.adaptTo(InputStream.class);
+			byte[] temp = new byte[(int) prop2.available()];
+
+			prop2.read(temp);
+			content = new String(temp);
+		} catch (IOException e) {
+			content = "problem reading stream";
+		}
+		syntax = syntax.replace("x-", "").replace("-source", "");
 		RSyntaxTextArea editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
@@ -89,9 +95,6 @@ public class UpdateEditorPane implements EventHandler {
 		editorTextArea.setEditable(true);
 		editorTextArea.setSyntaxEditingStyle(syntax);
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
-
-		editor.addTab(title, null, editorScrollPane, null);
-		editor.setSelectedComponent(editorScrollPane);
 		return editorScrollPane;
 	}
 
