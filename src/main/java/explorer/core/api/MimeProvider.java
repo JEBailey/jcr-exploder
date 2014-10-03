@@ -6,6 +6,6 @@ import org.apache.sling.api.resource.Resource;
 
 public interface MimeProvider {
 	
-	Component render(Resource resource);
+	Component createComponent(Resource resource, String syntax);
 
 }

@@ -2,12 +2,12 @@ package explorer.commands;
 
 import static org.osgi.service.event.EventConstants.EVENT_TOPIC;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -15,11 +15,17 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceMetadata;
 import org.apache.sling.commons.mime.MimeTypeService;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.EventHandler;
+import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import explorer.core.api.MimeProvider;
 import explorer.ide.EventTypes;
 import explorer.ide.TabEditor;
 
@@ -28,11 +34,15 @@ import explorer.ide.TabEditor;
 @Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION) })
 public class UpdateEditorPane implements EventHandler {
 
+	/** default log */
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    
 	@Reference
 	TabEditor editor;
 
 	@Reference
 	MimeTypeService mimes;
+	
 
 	private Map<String, Object> tabs = new HashMap<String, Object>();
 
@@ -52,11 +62,12 @@ public class UpdateEditorPane implements EventHandler {
 
 		String syntax = mimeType(resource);
 
-		if (!(syntax.contains("text") || syntax.contains("application"))) {
+		MimeProvider provider = getMimeProvider(syntax);
+		if (provider == null){
+			log.error("no syntax for {}",syntax);
 			return;
 		}
-		
-		java.awt.Component component = addEditor(resource, syntax);
+		java.awt.Component component = provider.createComponent(resource, syntax);
 		editor.addTab(resource.getName(), null, component, null);
 		editor.setSelectedComponent(component);
 		tabs.put(resource.getPath(),component);
@@ -71,31 +82,36 @@ public class UpdateEditorPane implements EventHandler {
 		if (prop == null) {
 			prop = "";
 		}
+		prop = prop.replace("x-", "").replace("-source", "");
 		return prop.replace("application/", "text/");
 	}
 
-	private java.awt.Component addEditor(Resource resource, String syntax) {
-		String content = "";
+	public MimeProvider getMimeProvider(String syntax){
+		String filterString = String.format("(mimeType=%s)",syntax);
 		try {
-			InputStream prop2 = resource.adaptTo(InputStream.class);
-			byte[] temp = new byte[(int) prop2.available()];
-
-			prop2.read(temp);
-			content = new String(temp);
-		} catch (IOException e) {
-			content = "problem reading stream";
+			Filter filter =  FrameworkUtil.createFilter(filterString);
+			for (ServiceReference sr: tracker.getServiceReferences()){
+				if (filter.match(sr)){
+					return (MimeProvider)tracker.getService(sr);
+				}
+			}
+		} catch (InvalidSyntaxException e) {
+			log.warn(e.getMessage());
 		}
-		syntax = syntax.replace("x-", "").replace("-source", "");
-		RSyntaxTextArea editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
-		editorTextArea.setAntiAliasingEnabled(true);
-		editorTextArea.setEditable(true);
-		editorTextArea.setText(content);
-		editorTextArea.setCaretPosition(0);
-		editorTextArea.setCodeFoldingEnabled(true);
-		editorTextArea.setEditable(true);
-		editorTextArea.setSyntaxEditingStyle(syntax);
-		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
-		return editorScrollPane;
+		return null;
 	}
+	
+	@Activate
+	public void activate(ComponentContext context) throws InvalidSyntaxException{
+		tracker = new ServiceTracker(context.getBundleContext(), MimeProvider.class.getName(),null);
+		tracker.open();
+	}
+	
+	@Deactivate
+	public void deactivate(){
+		tracker.close();
+	}
+	
+	ServiceTracker tracker;
 
 }

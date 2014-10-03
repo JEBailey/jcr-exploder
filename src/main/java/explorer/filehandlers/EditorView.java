@@ -1,6 +1,8 @@
 package explorer.filehandlers;
 
 import java.awt.Component;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
@@ -10,18 +12,24 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import explorer.core.api.MimeProvider;
 
-@org.apache.felix.scr.annotations.Component(name="Sling Explorer Renderer - Text Files",description="Provides the UI for Text Files")
+@org.apache.felix.scr.annotations.Component(immediate=true,name="Sling Explorer Renderer - Text Files",description="Provides the UI for Text Files")
 @Service
-@Property(name="mimeType",value="text/*")
+@Property(name="mimeType",value={"text/css","text/java","text/html","text/esp","text/javascript"})
 public class EditorView implements MimeProvider {
 
 	@Override
-	public Component render(Resource resource) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	private java.awt.Component addEditor(String title,String content, String syntax) {
+	public Component createComponent(Resource resource, String syntax) {
+		String content = "";
+		try {
+			InputStream prop2 = resource.adaptTo(InputStream.class);
+			byte[] temp = new byte[(int) prop2.available()];
+
+			prop2.read(temp);
+			content = new String(temp);
+		} catch (IOException e) {
+			content = "problem reading stream";
+		}
+		
 		RSyntaxTextArea editorTextArea = new RSyntaxTextArea(RSyntaxTextArea.INSERT_MODE);
 		editorTextArea.setAntiAliasingEnabled(true);
 		editorTextArea.setEditable(true);
@@ -31,7 +39,6 @@ public class EditorView implements MimeProvider {
 		editorTextArea.setEditable(true);
 		editorTextArea.setSyntaxEditingStyle(syntax);
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
-
 		return editorScrollPane;
 	}
 
