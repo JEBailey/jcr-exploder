@@ -15,7 +15,7 @@ import explorer.core.api.MimeProvider;
 @org.apache.felix.scr.annotations.Component(immediate=true,name="Sling Explorer Renderer - Text Files",description="Provides the UI for Text Files")
 @Service
 @Property(name="mimeType",value={"text/css","text/java","text/html","text/esp","text/javascript"})
-public class EditorView implements MimeProvider {
+public class TextView implements MimeProvider {
 
 	@Override
 	public Component createComponent(Resource resource, String syntax) {
