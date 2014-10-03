@@ -16,7 +16,7 @@ import explorer.core.api.MimeProvider;
 
 @org.apache.felix.scr.annotations.Component(immediate=true,name="Sling Explorer Renderer - Graphic Files",description="Provides the UI for Image Files")
 @Service
-@Property(name="mimeType",value={"image/png"})
+@Property(name="mimeType",value={"image/png","image/gif","image/jpeg"})
 public class ImageView implements MimeProvider {
 
 	@Override

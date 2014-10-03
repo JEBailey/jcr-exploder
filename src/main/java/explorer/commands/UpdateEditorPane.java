@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import explorer.core.api.MimeProvider;
 import explorer.ide.EventTypes;
 import explorer.ide.TabEditor;
+import explorer.ide.editorPane.ButtonTabComponent;
 
 @Component(name = "Sling Explorer Command - Update Editor Pane ", description = "Updates the Editor Pane with the correct view")
 @Service
@@ -54,14 +55,19 @@ public class UpdateEditorPane implements EventHandler {
 		}
 		Object view = tabs.get(resource.getPath());
 		if (view != null) {
-			editor.setSelectedComponent((java.awt.Component) view);
-			return;
+			int index = editor.indexOfComponent((java.awt.Component)view);
+			if (index >= 0){
+				editor.setSelectedComponent((java.awt.Component) view);
+				return;
+			}
 		} else {
 			editor.setSelectedIndex(-1);
 		}
 
 		String syntax = mimeType(resource);
-
+		if (syntax == null || syntax.isEmpty()){
+			return;
+		}
 		MimeProvider provider = getMimeProvider(syntax);
 		if (provider == null){
 			log.error("no syntax for {}",syntax);
@@ -70,6 +76,7 @@ public class UpdateEditorPane implements EventHandler {
 		java.awt.Component component = provider.createComponent(resource, syntax);
 		editor.addTab(resource.getName(), null, component, null);
 		editor.setSelectedComponent(component);
+		editor.setTabComponentAt(editor.indexOfComponent(component), new ButtonTabComponent(editor));
 		tabs.put(resource.getPath(),component);
 	}
 
