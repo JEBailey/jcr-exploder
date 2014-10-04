@@ -1,4 +1,4 @@
-package explorer.ide.tree;
+package explorer.ui.tree;
 
 import java.util.HashMap;
 import java.util.Iterator;

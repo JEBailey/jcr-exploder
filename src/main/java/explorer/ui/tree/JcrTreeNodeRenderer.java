@@ -1,4 +1,4 @@
-package explorer.ide.tree;
+package explorer.ui.tree;
 
 import java.awt.Component;
 
@@ -14,9 +14,9 @@ import org.apache.sling.commons.mime.MimeTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.ide.ui.IconCache;
-import explorer.ide.ui.IconCache.Type;
 import explorer.node.NodeTypeUtil;
+import explorer.ui.ui.IconCache;
+import explorer.ui.ui.IconCache.Type;
 
 @org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Node Renderer",description="Displays the correct image for the node in the tree")
 @Service(value=DefaultTreeCellRenderer.class)

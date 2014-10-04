@@ -1,4 +1,6 @@
-package explorer.ide;
+package explorer.ui;
+
+import javax.swing.UIManager;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -11,6 +13,8 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		Activator.context = context;
+		UIManager.setLookAndFeel(
+	            UIManager.getCrossPlatformLookAndFeelClassName());
 	}
 
 	@Override

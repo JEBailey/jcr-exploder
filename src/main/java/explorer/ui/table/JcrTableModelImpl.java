@@ -1,4 +1,4 @@
-package explorer.ide.table;
+package explorer.ui.table;
 
 import static org.osgi.service.event.EventConstants.EVENT_TOPIC;
 
@@ -21,7 +21,7 @@ import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import explorer.ide.EventTypes;
+import explorer.ui.EventTypes;
 
 @SuppressWarnings("serial")
 @Component

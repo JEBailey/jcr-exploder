@@ -12,8 +12,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import explorer.ide.EventTypes;
-import explorer.ide.tree.RightClickMenu;
+import explorer.ui.EventTypes;
+import explorer.ui.tree.RightClickMenu;
 
 @Component(name="Sling Explorer Command - Display Tree Menu",description="Provides the UI for Tree Options")
 @Service

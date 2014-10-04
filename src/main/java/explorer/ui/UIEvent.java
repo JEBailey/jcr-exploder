@@ -1,4 +1,4 @@
-package explorer.ide;
+package explorer.ui;
 
 import java.util.HashMap;
 

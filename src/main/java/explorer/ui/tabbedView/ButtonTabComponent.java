@@ -1,4 +1,4 @@
-package explorer.ide.editorPane;
+package explorer.ui.tabbedView;
  
 import java.awt.BasicStroke;
 import java.awt.Color;

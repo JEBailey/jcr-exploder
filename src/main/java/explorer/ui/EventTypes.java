@@ -1,4 +1,4 @@
-package explorer.ide;
+package explorer.ui;
 
 public interface EventTypes {
 	

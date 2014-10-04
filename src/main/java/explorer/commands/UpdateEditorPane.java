@@ -26,9 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.core.api.MimeProvider;
-import explorer.ide.EventTypes;
-import explorer.ide.TabEditor;
-import explorer.ide.editorPane.ButtonTabComponent;
+import explorer.ui.EventTypes;
+import explorer.ui.TabEditor;
+import explorer.ui.tabbedView.ButtonTabComponent;
 
 @Component(name = "Sling Explorer Command - Update Editor Pane ", description = "Updates the Editor Pane with the correct view")
 @Service

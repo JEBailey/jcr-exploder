@@ -1,4 +1,4 @@
-package explorer.ide.ui;
+package explorer.ui.ui;
 
 import java.net.URL;
 import java.util.EnumMap;
@@ -19,8 +19,6 @@ public class IconCache {
 
 	public enum Type { application, code, css, db, doc, esp, file, folder, folder_open, gif, html, node_select_child, png, txt}
 	
-    // cache for our icons
-    private static Map<Type,Icon> mIconCache= new EnumMap<Type,Icon>(Type.class);
     private static final Logger log = LoggerFactory
 			.getLogger(IconCache.class);
     /**
@@ -28,21 +26,15 @@ public class IconCache {
      * If no icon is found, null is returned.
      */
     public static Icon getIcon(Type type){
-    	Icon reply = mIconCache.get(type);
-  
-        if (reply == null) {
-        	try {
-        		URL url= IconCache.class.getResource("/images/"+type.toString()+".png");
-        		if (url != null){
-            		reply = new ImageIcon(url);
-            		mIconCache.put(type, reply);
-            	}
-        	} catch (Exception e) {
-        		log.error(e.getMessage());
-        	}
-        }
-
-        return reply;
+		try {
+			URL url = IconCache.class.getResource("/images/" + type.toString() + ".png");
+			if (url != null) {
+				return new ImageIcon(url);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+        return null;
     }
     
     

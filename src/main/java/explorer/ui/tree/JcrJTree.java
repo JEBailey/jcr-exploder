@@ -1,4 +1,4 @@
-package explorer.ide.tree;
+package explorer.ui.tree;
 
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -28,8 +28,8 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 import explorer.core.api.SessionProvider;
-import explorer.ide.EventTypes;
-import explorer.ide.UIEvent;
+import explorer.ui.EventTypes;
+import explorer.ui.UIEvent;
 
 @org.apache.felix.scr.annotations.Component(name = "Sling Explorer UI - Tree Renderer", description = "Displays the node based tree")
 @Service(value = JTree.class)
@@ -108,12 +108,6 @@ public class JcrJTree extends JTree {
 		setToolTipText("");
 		addTreeSelectiionListeners();
 
-		Session session = provider.getSession("key");
-		// Listen for changes to our orders
-		observer = session.getWorkspace().getObservationManager();
-		final String path = "/";
-		int events = javax.jcr.observation.Event.PROPERTY_ADDED|javax.jcr.observation.Event.NODE_ADDED;
-		//observer.addEventListener(this, javax.jcr.observation.Event.NODE_ADDED, path, true, null, null, false);
 
 	}
 	

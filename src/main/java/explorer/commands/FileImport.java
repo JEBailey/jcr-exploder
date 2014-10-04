@@ -25,7 +25,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
 
-import explorer.ide.EventTypes;
+import explorer.ui.EventTypes;
 
 @Component(name="Sling Explorer Command - File Import",description="Provides the UI to import a file or files")
 @Service

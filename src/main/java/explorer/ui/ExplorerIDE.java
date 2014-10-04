@@ -1,4 +1,4 @@
-package explorer.ide;
+package explorer.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -28,7 +28,7 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import explorer.ide.table.JcrTableModelImpl;
+import explorer.ui.table.JcrTableModelImpl;
 
 @Component(description = "Swing based Sling explorer", label = "Sling Explorer IDE", name = "ExplorerIDE")
 public class ExplorerIDE implements Runnable {

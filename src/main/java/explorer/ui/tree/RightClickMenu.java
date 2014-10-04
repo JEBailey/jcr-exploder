@@ -1,4 +1,4 @@
-package explorer.ide.tree;
+package explorer.ui.tree;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
