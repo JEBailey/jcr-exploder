@@ -33,7 +33,7 @@ import explorer.ui.tabbedView.ButtonTabComponent;
 @Component(name = "Sling Explorer Command - Update Editor Pane ", description = "Updates the Editor Pane with the correct view")
 @Service
 @Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION) })
-public class UpdateEditorPane implements EventHandler {
+public class UpdateTabbedView implements EventHandler {
 
 	/** default log */
     private final Logger log = LoggerFactory.getLogger(getClass());
