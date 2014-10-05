@@ -76,7 +76,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package></Export-Package>
-						<Bundle-Activator>explorer.ide.Activator</Bundle-Activator>
+						<Bundle-Activator>explorer.ui.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-ClassPath>.,lib/rsyntaxtextarea.jar</Bundle-ClassPath>

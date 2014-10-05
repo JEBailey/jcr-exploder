@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import explorer.core.api.MimeProvider;
 import explorer.ui.EventTypes;
-import explorer.ui.TabEditor;
-import explorer.ui.tabbedView.ButtonTabComponent;
+import explorer.ui.contentview.ButtonTabComponent;
+import explorer.ui.contentview.TabContainer;
 
 @Component(name = "Sling Explorer Command - Update Editor Pane ", description = "Updates the Editor Pane with the correct view")
 @Service
@@ -39,7 +39,7 @@ public class UpdateTabbedView implements EventHandler {
     private final Logger log = LoggerFactory.getLogger(getClass());
     
 	@Reference
-	TabEditor editor;
+	TabContainer editor;
 
 	@Reference
 	MimeTypeService mimes;
@@ -89,8 +89,7 @@ public class UpdateTabbedView implements EventHandler {
 		if (prop == null) {
 			prop = "";
 		}
-		prop = prop.replace("x-", "").replace("-source", "");
-		return prop.replace("application/", "text/");
+		return prop;
 	}
 
 	public MimeProvider getMimeProvider(String syntax){

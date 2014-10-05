@@ -1,4 +1,4 @@
-package explorer.ui.tabbedView;
+package explorer.ui.contentview;
  
 import java.awt.BasicStroke;
 import java.awt.Color;

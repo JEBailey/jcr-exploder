@@ -45,23 +45,11 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 				if (NodeTypeUtil.isType(resource,"nt:folder")){
 					type = expanded ? Type.folder_open: Type.folder;
 				} else if (NodeTypeUtil.isType(resource,"nt:file")) {
-					ResourceMetadata metaData = resource.getResourceMetadata();
-					String prop = metaData.getContentType();
-					if (prop == null){
-						prop = mimes.getMimeType(resource.getName());
-					}
+					String prop = prop = mimeType(resource);
 					if (prop != null) {
 						String mime[] = prop.split("/");
-						Type base = getType(mime[0]);
-						if (mime.length > 1) {
-							Type extended = getType(mime[1]);
-							if (extended != null){
-								base = extended;
-							}
-						}
-						if (base != null) {
-							type = base;
-						}
+						type = getType(mime[1]);
+						
 					}
 				} else {
 					type = Type.node_select_child;
@@ -72,6 +60,18 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 		}
 		setIcon(IconCache.getIcon(type));
 		return this;
+	}
+	
+	private String mimeType(Resource resource) {
+		ResourceMetadata metaData = resource.getResourceMetadata();
+		String prop = metaData.getContentType();
+		if (prop == null) {
+			prop = mimes.getMimeType(resource.getName());
+		}
+		if (prop == null) {
+			prop = "";
+		}
+		return prop;
 	}
 
 	private Type getType(String value) {
