@@ -209,4 +209,5 @@
 		</dependency>
 	</dependencies>
 	<artifactId>jcr.exploder</artifactId>
+	<name>Sling GUI Based Explorer</name>
 </project>

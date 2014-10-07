@@ -1,4 +1,4 @@
-package explorer.ui.ui;
+package explorer.ui;
 
 import java.net.URL;
 import java.util.EnumMap;
@@ -26,6 +26,9 @@ public class IconCache {
      * If no icon is found, null is returned.
      */
     public static Icon getIcon(Type type){
+    	if (type == null){
+    		type = Type.file;
+    	}
 		try {
 			URL url = IconCache.class.getResource("/images/" + type.toString() + ".png");
 			if (url != null) {

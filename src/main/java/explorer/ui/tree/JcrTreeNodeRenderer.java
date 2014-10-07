@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.node.NodeTypeUtil;
-import explorer.ui.ui.IconCache;
-import explorer.ui.ui.IconCache.Type;
+import explorer.ui.IconCache;
+import explorer.ui.IconCache.Type;
 
 @org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Node Renderer",description="Displays the correct image for the node in the tree")
 @Service(value=DefaultTreeCellRenderer.class)
@@ -45,10 +45,13 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 				if (NodeTypeUtil.isType(resource,"nt:folder")){
 					type = expanded ? Type.folder_open: Type.folder;
 				} else if (NodeTypeUtil.isType(resource,"nt:file")) {
-					String prop = prop = mimeType(resource);
+					String prop = mimeType(resource);
 					if (prop != null) {
 						String mime[] = prop.split("/");
 						type = getType(mime[1]);
+						if (type == null){
+							type = getType(mime[0]);
+						}
 						
 					}
 				} else {

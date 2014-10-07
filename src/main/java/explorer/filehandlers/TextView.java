@@ -14,7 +14,7 @@ import explorer.core.api.MimeProvider;
 
 @org.apache.felix.scr.annotations.Component(immediate=true,name="Sling Explorer Renderer - Text Files",description="Provides the UI for Text Files")
 @Service
-@Property(name="mimeType",value={"text/css","text/java","text/html","text/esp","text/javascript"})
+@Property(name="mimeType",value={"text/css","text/x-java-source","text/html","application/esp","application/javascript"})
 public class TextView implements MimeProvider {
 
 	@Override
@@ -37,9 +37,13 @@ public class TextView implements MimeProvider {
 		editorTextArea.setCaretPosition(0);
 		editorTextArea.setCodeFoldingEnabled(true);
 		editorTextArea.setEditable(true);
-		editorTextArea.setSyntaxEditingStyle(syntax);
+		editorTextArea.setSyntaxEditingStyle(normalize(syntax));
 		RTextScrollPane editorScrollPane = new RTextScrollPane(editorTextArea);
 		return editorScrollPane;
+	}
+	
+	private String normalize(String syntax){
+		return syntax.replace("x-", "").replace("-source","");
 	}
 
 }

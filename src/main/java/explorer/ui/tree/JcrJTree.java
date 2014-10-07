@@ -3,13 +3,9 @@ package explorer.ui.tree;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.observation.EventIterator;
-import javax.jcr.observation.ObservationManager;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
@@ -24,10 +20,8 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
-import explorer.core.api.SessionProvider;
 import explorer.ui.EventTypes;
 import explorer.ui.UIEvent;
 
@@ -36,9 +30,9 @@ import explorer.ui.UIEvent;
 @SuppressWarnings("serial")
 public class JcrJTree extends JTree {
 
+	// Set the magic property which makes the first click outside the popup
+	// capable of selecting tree nodes, as well as dismissing the popup.
 	static {
-		// Set the magic property which makes the first click outside the popup
-		// capable of selecting tree nodes, as well as dismissing the popup.
 		UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
 	}
 
@@ -51,10 +45,6 @@ public class JcrJTree extends JTree {
 	@Reference
 	EventAdmin eventAdmin;
 
-	@Reference
-	SessionProvider provider;
-
-	ObservationManager observer;
 
 	@Activate
 	private void activate() throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -77,13 +67,9 @@ public class JcrJTree extends JTree {
 				if (e.isPopupTrigger()) {
 					// set the new selections before showing the popup
 					setSelectedItemsOnPopupTrigger(e);
-					eventAdmin.postEvent(new Event(EventTypes.SHOW_TREE_MENU, new HashMap<String, Object>() {
-						{
-							Point menuLocation = new Point(e.getX() + 3, e.getY() + 3);
-							put("source", e.getSource());
-							put("data", menuLocation);
-						}
-					}));
+					UIEvent uiEvent = new UIEvent(EventTypes.SHOW_TREE_MENU, e.getSource(), new Point(e.getX() + 3,
+							e.getY() + 3));
+					eventAdmin.postEvent(uiEvent);
 				}
 			}
 
@@ -108,14 +94,10 @@ public class JcrJTree extends JTree {
 		setToolTipText("");
 		addTreeSelectiionListeners();
 
-
 	}
-	
+
 	@Deactivate
-	public void deactivate() throws RepositoryException{
-		if(observer != null) {
-			//observer.removeEventListener(this);
-        }
+	public void deactivate() throws RepositoryException {
 	}
 
 	@Override
@@ -144,7 +126,5 @@ public class JcrJTree extends JTree {
 		});
 
 	}
-
-
 
 }
