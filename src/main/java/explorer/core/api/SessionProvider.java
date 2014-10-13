@@ -8,4 +8,6 @@ public interface SessionProvider {
 	
 	public void createSession(String name, char[] credentials, String key);
 	
+	public void save();
+	
 }

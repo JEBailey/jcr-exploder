@@ -39,6 +39,7 @@ public class ButtonTabComponent extends JPanel {
 			private static final long serialVersionUID = 1L;
 			{
         		setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        		setFocusable(false);
         	}
             public String getText() {
                 int i = pane.indexOfTabComponent(ButtonTabComponent.this);
@@ -54,7 +55,8 @@ public class ButtonTabComponent extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
     }
  
-    private class TabButton extends JButton implements ActionListener {
+    @SuppressWarnings("serial")
+	private class TabButton extends JButton implements ActionListener {
         public TabButton() {
             int size = 17;
             setPreferredSize(new Dimension(size, size));

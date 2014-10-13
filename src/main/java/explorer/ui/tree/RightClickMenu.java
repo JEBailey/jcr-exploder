@@ -3,10 +3,12 @@ package explorer.ui.tree;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
+import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
@@ -21,6 +23,9 @@ public class RightClickMenu extends JPopupMenu {
 	@Reference
 	JTree tree;
 	
+	@Reference
+	AbstractAction importFiles;
+	
 	Resource resource;
 	
 	public void setResource(Resource resource){
@@ -30,21 +35,13 @@ public class RightClickMenu extends JPopupMenu {
 	JMenuItem mntmCopy = new JMenuItem("Copy");
 	JMenuItem mntmPaste = new JMenuItem("Paste");
 	JMenuItem mntmDelete = new JMenuItem("Delete");
-	final JMenuItem mntmImportFiles = new JMenuItem("Import Files");
 
-	{
+	@Activate
+	public void activate(){
 		add(mntmCopy);
 		add(mntmPaste);
-		add(mntmImportFiles);
+		add(new JMenuItem(importFiles));
 		add(mntmDelete);
-		mntmImportFiles.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//TODO:
-			    //dispatcher.dispatchEvent(new FindFiles(this, resource));
-			}
-		});
 
 		mntmDelete.addActionListener(new ActionListener() {
 

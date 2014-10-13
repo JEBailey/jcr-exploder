@@ -16,6 +16,7 @@ public class TabContainer extends JTabbedPane {
 
 	public TabContainer() {
 		super(JTabbedPane.TOP);
+		setFocusable(false);
 	}
 
 }

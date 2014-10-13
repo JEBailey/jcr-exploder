@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.swing.JTree;
 import javax.swing.UIManager;
@@ -106,6 +107,9 @@ public class JcrJTree extends JTree {
 		if (value != null) {
 			if (value instanceof Resource) {
 				Resource resource = (Resource) value;
+				if (resource.getPath().equals("/")){
+					return "workspace: "+resource.getResourceResolver().adaptTo(Session.class).getWorkspace().getName();
+				}
 				return resource.getName();
 			}
 		}

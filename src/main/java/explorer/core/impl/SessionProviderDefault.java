@@ -1,6 +1,15 @@
 package explorer.core.impl;
 
+import javax.jcr.AccessDeniedException;
+import javax.jcr.InvalidItemStateException;
+import javax.jcr.ItemExistsException;
+import javax.jcr.ReferentialIntegrityException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -9,6 +18,7 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 
 import explorer.core.api.SessionProvider;
+
 import org.apache.sling.jcr.api.SlingRepository;
 
 @Component
@@ -38,6 +48,17 @@ public class SessionProviderDefault implements SessionProvider {
 	@Override
 	public void createSession(String name, char[] credentials, String key) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void save() {
+		try {
+			session.save();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
