@@ -55,6 +55,9 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 						
 					}
 				} else {
+					if (resource.getPath().equals("/")){
+						type =Type.db;
+					}
 					type = Type.node_select_child;
 				}
 			} catch (Exception e) {

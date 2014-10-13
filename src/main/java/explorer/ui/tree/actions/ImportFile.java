@@ -6,9 +6,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
@@ -23,6 +22,9 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.mime.MimeTypeService;
+import org.apache.sling.jcr.contentloader.ContentImportListener;
+import org.apache.sling.jcr.contentloader.ContentImporter;
+import org.apache.sling.jcr.contentloader.ImportOptions;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
@@ -44,6 +46,12 @@ public class ImportFile extends AbstractAction implements EventHandler {
 	@Reference
 	SessionProvider sessionProvider;
 	
+	@Reference
+	ContentImporter importer;
+	
+	@Reference
+	ContentImportListener listener;
+	
 	public ImportFile() {
 		super("Import Files");
 		// TODO Auto-generated constructor stub
@@ -60,7 +68,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 				if (node.isNodeType("nt:folder")){
 					File file = fc.getSelectedFile();
 					if (file.isFile()){
-						Node fileNode = importFile(node,file);
+						importFile2(node,file);
 						//Dictionary<String,Object> props = new Hashtable<String,Object>();
 						//props.put("source", event.getProperty("source"));
 						//props.put("path",fileNode.getPath());
@@ -75,7 +83,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		}
 	}
 	
-	public Node importFile(Node parentnode, File file)
+	public Node importFile3(Node parentnode, File file)
 			throws RepositoryException, IOException {
 
 		String mimeTypes = mimes.getMimeType(file.getName());
@@ -92,6 +100,36 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		sessionProvider.save();
 		return fileNode;
 	}
+	
+	public void importFile2(Node parentnode, File file)
+			throws RepositoryException, IOException {
+		importer.importContent(parentnode, file.getName(),(InputStream) new FileInputStream(file), new ImportOptions() {
+			
+			@Override
+			public boolean isPropertyOverwrite() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean isOverwrite() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+			@Override
+			public boolean isIgnoredImportProvider(String arg0) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean isCheckin() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		}, listener);
+	}
 
 	public void importFolder(Node parentnode, File directory)
 			throws RepositoryException, IOException {
@@ -105,7 +143,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 				sessionProvider.save();
 				importFolder(childnode, direntry);
 			} else {
-				importFile(parentnode, direntry);
+				importFile2(parentnode, direntry);
 			}
 		}
 

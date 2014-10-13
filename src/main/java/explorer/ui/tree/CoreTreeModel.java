@@ -144,7 +144,7 @@ public class CoreTreeModel implements TreeModel {
 	 *            the changed elements
 	 * @see EventListenerList
 	 */
-	protected void fireTreeNodesChanged(Object[] path, int[] childIndices, Object[] children) {
+	public void fireTreeNodesChanged(Object[] path, int[] childIndices, Object[] children) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
 		TreeModelEvent e = null;
@@ -208,7 +208,7 @@ public class CoreTreeModel implements TreeModel {
 	 *            the removed elements
 	 * @see EventListenerList
 	 */
-	protected void fireTreeNodesRemoved(Object[] path, int[] childIndices, Object[] children) {
+	public void fireTreeNodesRemoved(Object[] path, int[] childIndices, Object[] children) {
 		// Guaranteed to return a non-null array
 		Object[] listeners = listenerList.getListenerList();
 		TreeModelEvent e = null;
@@ -329,19 +329,13 @@ public class CoreTreeModel implements TreeModel {
 	}
 
 	public void updateStructure(Resource node) {
-		/*
-		 * Node parentNode; try { parentNode = node.getParent();
-		 * fireTreeStructureChanged(convertToPath(parentNode),
-		 * getIndexOfChild(parentNode, node), node); } catch
-		 * (AccessDeniedException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (ItemNotFoundException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch
-		 * (RepositoryException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); }
-		 */
+		Resource parentNode;
+		parentNode = node.getParent();
+		fireTreeStructureChanged(convertToPath(parentNode), getIndexOfChild(parentNode, node), node);
+
 	}
 
-	protected Object[] convertToPath(Resource node) {
+	public Object[] convertToPath(Resource node) {
 		/*
 		 * Node workNode = node; Object[] reply = {}; try { int depth =
 		 * node.getDepth(); reply = new Object[depth+1];//depth starts at 0 for
@@ -352,20 +346,71 @@ public class CoreTreeModel implements TreeModel {
 		 */return null;
 	}
 
-	protected void fireTreeNodeRemoved(Object[] path, int index, Object child) {
+	public void fireTreeNodeRemoved(Object[] path, int index, Object child) {
 		fireTreeNodesRemoved(path, new int[] { index }, new Object[] { child });
 	}
 
-	protected void fireTreeNodeInserted(Object[] path, int index, Object child) {
+	public void fireTreeNodeInserted(Object[] path, int index, Object child) {
 		fireTreeNodesInserted(path, new int[] { index }, new Object[] { child });
 	}
 
-	protected void fireTreeStructureChanged(Object[] path, int index, Object child) {
+	public void fireTreeStructureChanged(Object[] path, int index, Object child) {
 		fireTreeStructureChanged(path, new int[] { index }, new Object[] { child });
 	}
 
-	protected void fireTreeNodeChanged(Object[] path, int index, Object child) {
+	public void fireTreeNodeChanged(Object[] path, int index, Object child) {
 		fireTreeNodesChanged(path, new int[] { index }, new Object[] { child });
+	}
+
+	public void fireStructureChanged(TreePath path) {
+		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
+		TreeModelEvent event = new TreeModelEvent(this, path);
+		for (TreeModelListener lis : listeners) {
+			lis.treeStructureChanged(event);
+		}
+	}
+
+	public void fireNodesRemoved(TreePath parentPath, int[] indices, Object[] nodes) {
+		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
+
+		TreeModelEvent event = new TreeModelEvent(this, parentPath, indices, nodes);
+		for (TreeModelListener lis : listeners) {
+			lis.treeNodesRemoved(event);
+		}
+	}
+
+
+	public void fireNodeRemoved(TreePath path, int index, Object node) {
+		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
+		fireNodesRemoved(path, new int[] { index }, new Object[] { node });
+	}
+
+
+	public void fireNodesChanged(TreePath parentPath, int[] indices, Object[] nodes) {
+		TreeModelEvent event = new TreeModelEvent(this, parentPath, indices, nodes);
+		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
+
+		for (TreeModelListener lis : listeners) {
+			lis.treeNodesChanged(event);
+		}
+	}
+
+	public void fireNodeChanged(TreePath parentPath, int index, Object node) {
+		if (index >= 0) {
+			fireNodesChanged(parentPath, new int[] { index }, new Object[] { node });
+		}
+	}
+
+	public void fireNodesInserted(TreePath parentPath, int[] indices, Object[] subNodes) {
+		TreeModelListener[] listeners = listenerList.getListeners(TreeModelListener.class);
+		TreeModelEvent event = new TreeModelEvent(this, parentPath, indices, subNodes);
+		for (TreeModelListener lis : listeners) {
+			lis.treeNodesInserted(event);
+		}
+	}
+
+	public void fireNodeInserted(TreePath parentPath, int index, Object node) {
+		fireNodesInserted(parentPath, new int[] { index }, new Object[] { node });
 	}
 
 }
