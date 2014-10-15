@@ -68,11 +68,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 				if (node.isNodeType("nt:folder")){
 					File file = fc.getSelectedFile();
 					if (file.isFile()){
-						importFile2(node,file);
-						//Dictionary<String,Object> props = new Hashtable<String,Object>();
-						//props.put("source", event.getProperty("source"));
-						//props.put("path",fileNode.getPath());
-						//eventQueue.postEvent(new Event("explorer/gui/RESOURCE_MODIFIED",props));
+						importFile3(node,file);
 					} else if (file.isDirectory()){
 						importFolder(node, file);
 					}
@@ -131,19 +127,21 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		}, listener);
 	}
 
-	public void importFolder(Node parentnode, File directory)
+	public void importFolder(Node parentNode, File directory)
 			throws RepositoryException, IOException {
-		File direntries[] = directory.listFiles();
-		System.out.println(parentnode.getPath());
-		for (int i = 0; i < direntries.length; i++) {
-			File direntry = direntries[i];
-			if (direntry.isDirectory()) {
-				Node childnode = parentnode.addNode(direntry.getName(),
+		File children[] = directory.listFiles();
+		Node folderNode = parentNode.addNode(directory.getName(),"sling:Folder");
+		sessionProvider.save();
+		System.out.println(parentNode.getPath());
+		for (int i = 0; i < children.length; i++) {
+			File child = children[i];
+			if (child.isDirectory()) {
+				Node childnode = parentNode.addNode(child.getName(),
 						"nt:folder");
 				sessionProvider.save();
-				importFolder(childnode, direntry);
+				importFolder(childnode, child);
 			} else {
-				importFile2(parentnode, direntry);
+				importFile3(parentNode, child);
 			}
 		}
 

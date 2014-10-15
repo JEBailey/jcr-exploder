@@ -2,7 +2,7 @@ package explorer.core.api;
 
 import javax.jcr.Session;
 
-public interface SessionProvider {
+public interface SessionProvider extends Session {
 
 	public Session getSession(String key);
 	
