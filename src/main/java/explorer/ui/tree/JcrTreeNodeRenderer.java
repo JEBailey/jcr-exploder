@@ -18,56 +18,56 @@ import explorer.node.NodeTypeUtil;
 import explorer.ui.IconCache;
 import explorer.ui.IconCache.Type;
 
-@org.apache.felix.scr.annotations.Component(name="Sling Explorer UI - Tree Node Renderer",description="Displays the correct image for the node in the tree")
-@Service(value=DefaultTreeCellRenderer.class)
-@Property(name="type", value="updatePane")
+@org.apache.felix.scr.annotations.Component(name = "Sling Explorer UI - Tree Node Renderer", description = "Displays the correct image for the node in the tree")
+@Service(value = DefaultTreeCellRenderer.class)
+@Property(name = "type", value = "updatePane")
 public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	@Reference
 	MimeTypeService mimes;
-	
+
 	private static final Logger log = LoggerFactory.getLogger(JcrTreeNodeRenderer.class);
 
-	public Component getTreeCellRendererComponent(JTree tree, Object value,
-			boolean sel, boolean expanded, boolean leaf, int row,
-			boolean hasFocus) {
-		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-				row, hasFocus);
+	public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
+			boolean leaf, int row, boolean hasFocus) {
+		super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		Type type = Type.file;
 		if (value != null && (value instanceof Resource)) {
 			Resource resource = (Resource) value;
 			try {
-				if (NodeTypeUtil.isType(resource,"nt:folder")){
-					type = expanded ? Type.folder_open: Type.folder;
-				} else if (NodeTypeUtil.isType(resource,"nt:file")) {
+				if (NodeTypeUtil.isType(resource, "nt:folder")) {
+					type = expanded ? Type.folder_open : Type.folder;
+				} else if (NodeTypeUtil.isType(resource, "nt:file")) {
 					String prop = mimeType(resource);
 					if (prop != null) {
-						String mime[] = prop.split("/");
-						type = getType(mime[1]);
-						if (type == null){
-							type = getType(mime[0]);
+
+						String[] mime = prop.split("/");
+						if (mime.length == 2) {
+							type = getType(mime[1]);
+							if (type == null) {
+								type = getType(mime[0]);
+							}
 						}
-						
 					}
 				} else {
-					if (resource.getPath().equals("/")){
-						type =Type.db;
+					if (resource.getPath().equals("/")) {
+						type = Type.db;
 					}
 					type = Type.node_select_child;
 				}
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				log.error(e.toString());
 			}
 		}
 		setIcon(IconCache.getIcon(type));
 		return this;
 	}
-	
+
 	private String mimeType(Resource resource) {
 		ResourceMetadata metaData = resource.getResourceMetadata();
 		String prop = metaData.getContentType();
@@ -87,6 +87,5 @@ public class JcrTreeNodeRenderer extends DefaultTreeCellRenderer {
 			return null;
 		}
 	}
-
 
 }

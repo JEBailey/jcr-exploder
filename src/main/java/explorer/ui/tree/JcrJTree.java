@@ -12,7 +12,6 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -23,6 +22,7 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.event.EventAdmin;
 
+import explorer.core.api.ResourceTreeModel;
 import explorer.ui.EventTypes;
 import explorer.ui.UIEvent;
 
@@ -41,7 +41,7 @@ public class JcrJTree extends JTree {
 	DefaultTreeCellRenderer jcrTreeNodeRenderer;
 
 	@Reference
-	TreeModel treeModel;
+	ResourceTreeModel treeModel;
 
 	@Reference
 	EventAdmin eventAdmin;

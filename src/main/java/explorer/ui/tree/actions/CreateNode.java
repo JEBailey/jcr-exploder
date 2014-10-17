@@ -21,11 +21,9 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.mime.MimeTypeService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
-import explorer.core.api.SessionProvider;
 import explorer.ui.EventTypes;
 import explorer.ui.contentview.TabContainer;
 
@@ -40,6 +38,7 @@ public class CreateNode extends AbstractAction implements EventHandler {
 
 	@Reference
 	private TabContainer editorTab;
+	
 
 	public CreateNode() {
 		super("Add Node");

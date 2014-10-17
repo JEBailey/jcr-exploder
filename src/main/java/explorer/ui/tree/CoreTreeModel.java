@@ -8,7 +8,6 @@ import javax.jcr.Session;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -22,11 +21,12 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.jcr.resource.JcrResourceConstants;
 
+import explorer.core.api.ResourceTreeModel;
 import explorer.core.api.SessionProvider;
 
 @Component(name = "Sling Explorer UI - Tree Model", description = "Models resource tree")
 @Service
-public class CoreTreeModel implements TreeModel {
+public class CoreTreeModel implements ResourceTreeModel {
 
 	@Reference
 	private ResourceResolverFactory factory;

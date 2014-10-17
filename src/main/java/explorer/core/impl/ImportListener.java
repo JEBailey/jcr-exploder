@@ -3,8 +3,6 @@ package explorer.core.impl;
 import java.awt.EventQueue;
 
 import javax.swing.JTree;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Component;
@@ -12,6 +10,7 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.jcr.contentloader.ContentImportListener;
 
+import explorer.core.api.ResourceTreeModel;
 import explorer.core.api.SessionProvider;
 
 @Component
@@ -21,7 +20,7 @@ public class ImportListener implements ContentImportListener {
 	EventQueue queue;
 	
 	@Reference
-	TreeModel model;
+	ResourceTreeModel model;
 	
 	@Reference
 	JTree jcrTree;

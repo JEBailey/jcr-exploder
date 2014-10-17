@@ -207,6 +207,12 @@
 			<version>2.1.10</version>
 			<type>bundle</type>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.2</version>
+			<type>bundle</type>
+		</dependency>
 	</dependencies>
 	<artifactId>jcr.exploder</artifactId>
 	<name>Sling GUI Based Explorer</name>
