@@ -54,26 +54,13 @@ public class ImportFile extends AbstractAction implements EventHandler {
 	private static final Logger log = LoggerFactory.getLogger(ImportFile.class);
 
 	@Reference
-	MimeTypeService mimes;
-
-	@Reference
 	SessionProvider sessionProvider;
-
-	@Reference
-	ContentImporter importer;
-
-	@Reference
-	ContentImportListener listener;
 
 	@Reference
 	ResourceTreeModel treeModel;
 
-	@Reference
-	JTree jTree;
-
 	public ImportFile() {
 		super("Import Files");
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -87,19 +74,20 @@ public class ImportFile extends AbstractAction implements EventHandler {
 				if (node.isNodeType("nt:folder")) {
 					File file = fc.getSelectedFile();
 					if (file.isFile()) {
-						importFile3(node, file);
+						importFile(node, file);
 					} else if (file.isDirectory()) {
 						importFolder(node, file);
 					}
 				}
+				treeModel.fireStructureChanged(selectedResource);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 		}
 	}
 
-	public Node importFile3(Node parentnode, File file) throws RepositoryException, IOException {
-
+	private Node importFile(Node parentnode, File file) throws RepositoryException, IOException {
+		
 		String mimeTypes = null;
 		try {
 			mimeTypes = determineMimeType(new FileInputStream(file));
@@ -119,8 +107,8 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		resNode.setProperty("jcr:data", binary);
 		resNode.setProperty("jcr:lastModified", lastModified);
 		sessionProvider.save();
-		TreePath path = jTree.getSelectionPath();
-		treeModel.fireStructureChanged(jTree.getSelectionPath());
+
+
 
 		return fileNode;
 	}
@@ -134,7 +122,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		return mimetype.toString();
 	}
 
-	public void importFolder(Node parentNode, File directory) throws RepositoryException, IOException {
+	private void importFolder(Node parentNode, File directory) throws RepositoryException, IOException {
 		File children[] = directory.listFiles();
 		Node folderNode = parentNode.addNode(directory.getName(), "sling:Folder");
 		sessionProvider.save();
@@ -146,7 +134,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 				sessionProvider.save();
 				importFolder(childnode, child);
 			} else {
-				importFile3(parentNode, child);
+				importFile(parentNode, child);
 			}
 		}
 

@@ -51,13 +51,10 @@ public class DeleteNode extends AbstractAction implements EventHandler {
 	public void actionPerformed(ActionEvent event) {
 		try {
 			int selection = JOptionPane.showConfirmDialog(editorTab, "Delete Node?", "Delete Node", JOptionPane.YES_NO_OPTION);
-			switch (selection) {
-			case JOptionPane.OK_OPTION:
-				Node parent = selectedResource.adaptTo(Node.class);
-				parent.remove();
+			if  (selection == JOptionPane.OK_OPTION) {
+				selectedResource.adaptTo(Node.class).remove();
 				sessionProvider.save();
 				treeModel.fireStructureChanged(selectedResource.getParent());
-				break;
 			}
 		} catch (RepositoryException e) {
 			log.error(e.getMessage());

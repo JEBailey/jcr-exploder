@@ -14,8 +14,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import explorer.core.api.ResourceTreeModel;
 import explorer.core.api.SessionProvider;
 import explorer.ui.EventTypes;
-import explorer.ui.ExplorerIDE;
 import explorer.ui.contentview.TabContainer;
 
 @SuppressWarnings("serial")
@@ -50,9 +47,6 @@ public class CreateNode extends AbstractAction implements EventHandler {
 	private ResourceTreeModel treeModel;
 	
 	@Reference
-	JTree jtree;
-	
-	@Reference
 	SessionProvider sessionProvider;
 
 	public CreateNode() {
@@ -68,7 +62,7 @@ public class CreateNode extends AbstractAction implements EventHandler {
 		try {
 			ntm = selectedResource.getResourceResolver().adaptTo(Session.class).getWorkspace().getNodeTypeManager();
 
-			NodeTypeIterator iterator = ntm.getAllNodeTypes();
+			NodeTypeIterator iterator = ntm.getPrimaryNodeTypes();
 			while (iterator.hasNext()) {
 				NodeType type = iterator.nextNodeType();
 				comboBox.addItem(type.getName());
@@ -86,7 +80,6 @@ public class CreateNode extends AbstractAction implements EventHandler {
 					parent.addNode(textField.getText(), comboBox.getSelectedItem().toString());
 					sessionProvider.save();
 					treeModel.fireStructureChanged(selectedResource);
-					//treeModel.fireStructureChanged(jtree.getSelectionPath());
 				} else {
 					JOptionPane.showConfirmDialog(editorTab, "Unable To Add Node");
 				}
