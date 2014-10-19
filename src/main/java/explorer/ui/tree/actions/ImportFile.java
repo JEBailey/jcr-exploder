@@ -23,6 +23,7 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.jackrabbit.util.Text;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.commons.mime.MimeTypeService;
 import org.apache.sling.jcr.contentloader.ContentImportListener;
@@ -95,20 +96,20 @@ public class ImportFile extends AbstractAction implements EventHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // mimes.getMimeType(file.getName());
-		Node fileNode = parentnode.addNode(file.getName(), "nt:file");
+		
+		String fileName = Text.escapeIllegalJcrChars(file.getName());
+		
+		Node fileNode = parentnode.addNode(fileName, "nt:file");
 
 		Node resNode = fileNode.addNode("jcr:content", "nt:resource");
 		Binary binary = parentnode.getSession().getValueFactory().createBinary(new FileInputStream(file));
 		Calendar lastModified = Calendar.getInstance();
 		lastModified.setTimeInMillis(file.lastModified());
-
+		
 		resNode.setProperty("jcr:mimeType", mimeTypes);
-		resNode.setProperty("jcr:encoding", "");
 		resNode.setProperty("jcr:data", binary);
 		resNode.setProperty("jcr:lastModified", lastModified);
 		sessionProvider.save();
-
-
 
 		return fileNode;
 	}
@@ -117,24 +118,22 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		TikaConfig tika = new TikaConfig();
 		Metadata data = new Metadata();
 		MediaType mimetype = tika.getDetector().detect(TikaInputStream.get(is), data);
-		log.error("Stream " + is + " is " + mimetype);
-		log.error("Stream " + is + " is " + Arrays.toString(data.names()));
 		return mimetype.toString();
 	}
 
-	private void importFolder(Node parentNode, File directory) throws RepositoryException, IOException {
-		File children[] = directory.listFiles();
-		Node folderNode = parentNode.addNode(directory.getName(), "sling:Folder");
+	
+	private void importFolder(Node destinationNode, File folderToImport) throws RepositoryException, IOException {
+		File children[] = folderToImport.listFiles();
+		String folderName = Text.escapeIllegalJcrChars(folderToImport.getName());
+		Node newFolderNode = destinationNode.addNode(folderName, "sling:Folder");
 		sessionProvider.save();
-		System.out.println(parentNode.getPath());
+		System.out.println(destinationNode.getPath());
 		for (int i = 0; i < children.length; i++) {
 			File child = children[i];
 			if (child.isDirectory()) {
-				Node childnode = parentNode.addNode(child.getName(), "nt:folder");
-				sessionProvider.save();
-				importFolder(childnode, child);
+				importFolder(newFolderNode, child);
 			} else {
-				importFile(parentNode, child);
+				importFile(newFolderNode, child);
 			}
 		}
 

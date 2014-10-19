@@ -19,6 +19,7 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.jackrabbit.util.Text;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.event.EventAdmin;
 
@@ -108,9 +109,9 @@ public class JcrJTree extends JTree {
 			if (value instanceof Resource) {
 				Resource resource = (Resource) value;
 				if (resource.getPath().equals("/")){
-					return "workspace: "+resource.getResourceResolver().adaptTo(Session.class).getWorkspace().getName();
+					return resource.getResourceResolver().adaptTo(Session.class).getWorkspace().getName();
 				}
-				return resource.getName();
+				return Text.unescapeIllegalJcrChars(resource.getName());
 			}
 		}
 		return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);

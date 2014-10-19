@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
@@ -29,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import explorer.core.api.ResourceTreeModel;
 import explorer.core.api.SessionProvider;
 import explorer.ui.resource.TreeResourceWrapper;
-import explorer.ui.tree.actions.CreateNode;
 
 @Component(name = "Sling Explorer UI - Tree Model", description = "Models resource tree")
 @Service
@@ -47,9 +44,8 @@ public class CoreTreeModel implements ResourceTreeModel {
 
 	@Activate
 	private void activate() throws LoginException {
-		Session session = provider.getSession("key");
 		Map<String, Object> authInfo = new HashMap<String, Object>();
-		authInfo.put(JcrResourceConstants.AUTHENTICATION_INFO_SESSION, session);
+		authInfo.put(JcrResourceConstants.AUTHENTICATION_INFO_SESSION, provider);
 		resourceResolver = factory.getResourceResolver(authInfo);
 	}
 

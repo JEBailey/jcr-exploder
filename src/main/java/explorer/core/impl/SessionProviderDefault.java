@@ -64,26 +64,9 @@ public class SessionProviderDefault implements SessionProvider {
         session.logout();
         session = null;
     }
-	@Override
-	public Session getSession(String key) {
-		return session;
-	}
 
-	@Override
-	public void createSession(String name, char[] credentials, String key) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void save() {
-		try {
+	public void save() throws AccessDeniedException, ItemExistsException, ReferentialIntegrityException, ConstraintViolationException, InvalidItemStateException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
 			session.save();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 
 	public String getDefaultWorkspace() {
@@ -307,6 +290,12 @@ public class SessionProviderDefault implements SessionProvider {
 
 	public void setNamespacePrefix(String arg0, String arg1) throws NamespaceException, RepositoryException {
 		session.setNamespacePrefix(arg0, arg1);
+	}
+
+	@Override
+	public void authenticate() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
