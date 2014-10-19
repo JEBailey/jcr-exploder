@@ -16,6 +16,7 @@ import javax.jcr.RepositoryException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -118,7 +119,7 @@ public class ImportFile extends AbstractAction implements EventHandler {
 		resNode.setProperty("jcr:data", binary);
 		resNode.setProperty("jcr:lastModified", lastModified);
 		sessionProvider.save();
-
+		TreePath path = jTree.getSelectionPath();
 		treeModel.fireStructureChanged(jTree.getSelectionPath());
 
 		return fileNode;

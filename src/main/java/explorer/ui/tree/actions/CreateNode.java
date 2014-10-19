@@ -14,6 +14,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -23,8 +25,13 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import explorer.core.api.ResourceTreeModel;
+import explorer.core.api.SessionProvider;
 import explorer.ui.EventTypes;
+import explorer.ui.ExplorerIDE;
 import explorer.ui.contentview.TabContainer;
 
 @SuppressWarnings("serial")
@@ -39,11 +46,19 @@ public class CreateNode extends AbstractAction implements EventHandler {
 	@Reference
 	private TabContainer editorTab;
 	
+	@Reference
+	private ResourceTreeModel treeModel;
+	
+	@Reference
+	JTree jtree;
+	
+	@Reference
+	SessionProvider sessionProvider;
 
 	public CreateNode() {
 		super("Add Node");
 	}
-
+	private static final Logger log = LoggerFactory.getLogger(CreateNode.class);
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		JComboBox<String> comboBox = new JComboBox<String>();
@@ -69,7 +84,9 @@ public class CreateNode extends AbstractAction implements EventHandler {
 				NodeType nt = parent.getPrimaryNodeType();
 				if (nt.canAddChildNode(textField.getText(), comboBox.getSelectedItem().toString())){
 					parent.addNode(textField.getText(), comboBox.getSelectedItem().toString());
-					parent.save();
+					sessionProvider.save();
+					treeModel.fireStructureChanged(selectedResource);
+					//treeModel.fireStructureChanged(jtree.getSelectionPath());
 				} else {
 					JOptionPane.showConfirmDialog(editorTab, "Unable To Add Node");
 				}

@@ -36,7 +36,6 @@ public class RightClickMenu extends JPopupMenu {
 
 	JMenuItem mntmCopy = new JMenuItem("Copy");
 	JMenuItem mntmPaste = new JMenuItem("Paste");
-	JMenuItem mntmDelete = new JMenuItem("Delete");
 
 	@Activate
 	public void activate() {
@@ -45,18 +44,6 @@ public class RightClickMenu extends JPopupMenu {
 		for (AbstractAction action : abstractActions) {
 			add(new JMenuItem(action));
 		}
-		add(mntmDelete);
-
-		mntmDelete.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Node parentNode = treeNode.getParent();
-				// treeNode.remove();
-				// parentNode.getSession().save();
-				// ((CoreTreeModel) tree.getModel()).updateStructure(null);
-			}
-		});
 
 	}
 
