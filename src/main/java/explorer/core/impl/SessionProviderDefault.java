@@ -38,12 +38,11 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-
-import explorer.core.api.SessionProvider;
-
 import org.apache.sling.jcr.api.SlingRepository;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+
+import explorer.core.api.SessionProvider;
 
 @Component
 @Service

@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 
 import javax.jcr.Binary;
@@ -15,8 +14,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
-import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
@@ -25,9 +22,6 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.jackrabbit.util.Text;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.commons.mime.MimeTypeService;
-import org.apache.sling.jcr.contentloader.ContentImportListener;
-import org.apache.sling.jcr.contentloader.ContentImporter;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.io.TikaInputStream;

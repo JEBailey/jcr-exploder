@@ -1,7 +1,6 @@
 package explorer.ui.preview;
 
 import java.awt.BorderLayout;
-import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

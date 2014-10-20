@@ -52,6 +52,7 @@ public class CreateNode extends AbstractAction implements EventHandler {
 	public CreateNode() {
 		super("Add Node");
 	}
+	
 	private static final Logger log = LoggerFactory.getLogger(CreateNode.class);
 	@Override
 	public void actionPerformed(ActionEvent event) {

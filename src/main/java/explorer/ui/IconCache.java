@@ -1,8 +1,6 @@
 package explorer.ui;
 
 import java.net.URL;
-import java.util.EnumMap;
-import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
