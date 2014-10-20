@@ -127,7 +127,7 @@ public class JcrJTree extends JTree {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				if (getLastSelectedPathComponent() != null) {
-					eventAdmin.postEvent(new UIEvent(EventTypes.DEFAULT_VIEW, this, getLastSelectedPathComponent()));
+					eventAdmin.postEvent(new UIEvent(EventTypes.TREE_SELECTION, this, getLastSelectedPathComponent()));
 				}
 			}
 

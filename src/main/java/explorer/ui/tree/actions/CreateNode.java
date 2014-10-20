@@ -34,7 +34,7 @@ import explorer.ui.contentview.TabContainer;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Create Node", description = "Adds a New Node")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.TREE_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class CreateNode extends AbstractAction implements EventHandler {
 
