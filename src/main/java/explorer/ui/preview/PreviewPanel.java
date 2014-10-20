@@ -2,6 +2,8 @@ package explorer.ui.preview;
 
 import java.awt.BorderLayout;
 import java.awt.LayoutManager;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -30,12 +32,51 @@ public class PreviewPanel extends JPanel {
 	
 	@Reference
 	JTable propertyTable;
+	
+	private static String checkmark =  	"\u2713 ";
 
 	@Activate
 	public void activate() {
 		JToolBar bar = new JToolBar();
 		bar.add(Box.createHorizontalGlue());
-		bar.add(new JButton("Properties"));
+		bar.add(new JButton(checkmark+"Properties"){
+			{
+				setFocusable(false);
+				setEnabled(false);
+				addMouseListener(new MouseListener() {
+					
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mousePressed(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+			}
+		});
 		bar.add(new JButton("File"));
 		bar.setFloatable(false);
 
@@ -44,20 +85,7 @@ public class PreviewPanel extends JPanel {
 		add("North", bar);
 		add("Center", propertiesPane);
 	}
+	
 
-	public PreviewPanel(boolean isDoubleBuffered) {
-		super(isDoubleBuffered);
-		// TODO Auto-generated constructor stub
-	}
-
-	public PreviewPanel(LayoutManager layout, boolean isDoubleBuffered) {
-		super(layout, isDoubleBuffered);
-		// TODO Auto-generated constructor stub
-	}
-
-	public PreviewPanel(LayoutManager layout) {
-		super(layout);
-		// TODO Auto-generated constructor stub
-	}
 
 }

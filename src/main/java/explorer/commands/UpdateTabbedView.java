@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.core.api.MimeProvider;
+import explorer.ui.ContentRenderer;
 import explorer.ui.EventTypes;
 import explorer.ui.contentview.ButtonTabComponent;
 import explorer.ui.contentview.TabContainer;
@@ -37,13 +38,12 @@ public class UpdateTabbedView implements EventHandler {
     
 	@Reference
 	TabContainer editor;
-
+	
 	@Reference
-	MimeTypeService mimes;
+	ContentRenderer contentRender;
 	
     private final Logger log = LoggerFactory.getLogger(getClass());
 	
-	private ServiceTracker tracker;
 
 	private Map<String, Object> tabs = new HashMap<String, Object>();
 	
@@ -67,20 +67,15 @@ public class UpdateTabbedView implements EventHandler {
 			editor.setSelectedIndex(-1);
 		}
 
-		String syntax = mimeType(resource);
+		String syntax = contentRender.mimeType(resource);
 		if (syntax == null || syntax.isEmpty()){
 			return;
 		}
 		
 		String filterString = String.format(searchFilter,syntax);
 		
-		MimeProvider provider = getMimeProvider(filterString);
-		if (provider == null){
-			log.error("no syntax for {}",syntax);
-			return;
-		}
+		java.awt.Component component = contentRender.getComponent(resource, filterString, syntax);
 		
-		java.awt.Component component = provider.createComponent(resource, syntax);
 		editor.addTab(resource.getName(), null, component, null);
 		editor.setSelectedComponent(component);
 		editor.setTabComponentAt(editor.indexOfComponent(component), new ButtonTabComponent(editor));
@@ -88,41 +83,9 @@ public class UpdateTabbedView implements EventHandler {
 	}
 	
 
-	private String mimeType(Resource resource) {
-		ResourceMetadata metaData = resource.getResourceMetadata();
-		String prop = metaData.getContentType();
-		if (prop == null) {
-			prop = mimes.getMimeType(resource.getName());
-		}
-		if (prop == null) {
-			prop = "";
-		}
-		return prop;
-	}
 
-	public MimeProvider getMimeProvider(String filterString){
-		try {
-			Filter filter =  FrameworkUtil.createFilter(filterString);
-			for (ServiceReference sr: tracker.getServiceReferences()){
-				if (filter.match(sr)){
-					return (MimeProvider)tracker.getService(sr);
-				}
-			}
-		} catch (InvalidSyntaxException e) {
-			log.warn(e.getMessage());
-		}
-		return null;
-	}
-	
-	@Activate
-	private void activate(ComponentContext context) throws InvalidSyntaxException{
-		tracker = new ServiceTracker(context.getBundleContext(), MimeProvider.class.getName(),null);
-		tracker.open();
-	}
-	
-	@Deactivate
-	private void deactivate(){
-		tracker.close();
-	}
+
+
+
 
 }
