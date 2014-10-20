@@ -34,9 +34,6 @@ import explorer.ui.contentview.TabContainer;
 @Service
 @Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION) })
 public class UpdateTabbedView implements EventHandler {
-
-	/** default log */
-    private final Logger log = LoggerFactory.getLogger(getClass());
     
 	@Reference
 	TabContainer editor;
@@ -44,8 +41,13 @@ public class UpdateTabbedView implements EventHandler {
 	@Reference
 	MimeTypeService mimes;
 	
+    private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	private ServiceTracker tracker;
 
 	private Map<String, Object> tabs = new HashMap<String, Object>();
+	
+	public static final String searchFilter = "(mimeType=%s)";
 
 	@Override
 	public void handleEvent(org.osgi.service.event.Event event) {
@@ -54,6 +56,7 @@ public class UpdateTabbedView implements EventHandler {
 			resource = resource.getParent();
 		}
 		Object view = tabs.get(resource.getPath());
+		
 		if (view != null) {
 			int index = editor.indexOfComponent((java.awt.Component)view);
 			if (index >= 0){
@@ -68,17 +71,22 @@ public class UpdateTabbedView implements EventHandler {
 		if (syntax == null || syntax.isEmpty()){
 			return;
 		}
-		MimeProvider provider = getMimeProvider(syntax);
+		
+		String filterString = String.format(searchFilter,syntax);
+		
+		MimeProvider provider = getMimeProvider(filterString);
 		if (provider == null){
 			log.error("no syntax for {}",syntax);
 			return;
 		}
+		
 		java.awt.Component component = provider.createComponent(resource, syntax);
 		editor.addTab(resource.getName(), null, component, null);
 		editor.setSelectedComponent(component);
 		editor.setTabComponentAt(editor.indexOfComponent(component), new ButtonTabComponent(editor));
 		tabs.put(resource.getPath(),component);
 	}
+	
 
 	private String mimeType(Resource resource) {
 		ResourceMetadata metaData = resource.getResourceMetadata();
@@ -92,8 +100,7 @@ public class UpdateTabbedView implements EventHandler {
 		return prop;
 	}
 
-	public MimeProvider getMimeProvider(String syntax){
-		String filterString = String.format("(mimeType=%s)",syntax);
+	public MimeProvider getMimeProvider(String filterString){
 		try {
 			Filter filter =  FrameworkUtil.createFilter(filterString);
 			for (ServiceReference sr: tracker.getServiceReferences()){
@@ -108,16 +115,14 @@ public class UpdateTabbedView implements EventHandler {
 	}
 	
 	@Activate
-	public void activate(ComponentContext context) throws InvalidSyntaxException{
+	private void activate(ComponentContext context) throws InvalidSyntaxException{
 		tracker = new ServiceTracker(context.getBundleContext(), MimeProvider.class.getName(),null);
 		tracker.open();
 	}
 	
 	@Deactivate
-	public void deactivate(){
+	private void deactivate(){
 		tracker.close();
 	}
-	
-	ServiceTracker tracker;
 
 }

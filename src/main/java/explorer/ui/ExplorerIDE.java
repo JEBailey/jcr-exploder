@@ -61,18 +61,7 @@ public class ExplorerIDE implements Runnable {
 		splitPane.setDividerSize(3);
 		frmJcrExploder.getContentPane().add(splitPane, BorderLayout.CENTER);
 
-		JSplitPane splitPane_1 = new JSplitPane();
-		splitPane_1.setDividerSize(4);
-		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		splitPane.setRightComponent(splitPane_1);
-
-		JScrollPane propertiesScrollPane = new JScrollPane();
-		splitPane_1.setRightComponent(propertiesScrollPane);
-
-		//propertiesScrollPane.setViewportView(table);
-
-		splitPane_1.setLeftComponent(editorTab);
-		splitPane_1.setDividerLocation(320);
+		splitPane.setRightComponent(editorTab);
 
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
@@ -89,7 +78,7 @@ public class ExplorerIDE implements Runnable {
 		button.setContentAreaFilled(false);
 		button.setBorder(new CompoundBorder());
 		panel.add(button);
-		splitPane.setDividerLocation(120);
+		splitPane.setDividerLocation(200);
 
 		JMenuBar menuBar = new JMenuBar();
 		frmJcrExploder.setJMenuBar(menuBar);

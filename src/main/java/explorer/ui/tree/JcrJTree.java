@@ -56,15 +56,17 @@ public class JcrJTree extends JTree {
 			public void mousePressed(MouseEvent e) {
 				showMenuIfPopupTrigger(e);
 			}
-
-			public void mouseClicked(MouseEvent e) {
-				showMenuIfPopupTrigger(e);
-			}
-
+			
 			public void mouseReleased(MouseEvent e) {
 				showMenuIfPopupTrigger(e);
 			}
-
+			
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2){
+					eventAdmin.postEvent(new UIEvent(EventTypes.VIEW_SELECTION, this, getLastSelectedPathComponent()));
+				}
+			}
+			
 			private void showMenuIfPopupTrigger(final MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					// set the new selections before showing the popup
@@ -74,6 +76,7 @@ public class JcrJTree extends JTree {
 					eventAdmin.postEvent(uiEvent);
 				}
 			}
+
 
 			/**
 			 * Fix for right click not selecting tree nodes - We want to
@@ -124,7 +127,7 @@ public class JcrJTree extends JTree {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				if (getLastSelectedPathComponent() != null) {
-					eventAdmin.postEvent(new UIEvent(EventTypes.VIEW_SELECTION, this, getLastSelectedPathComponent()));
+					eventAdmin.postEvent(new UIEvent(EventTypes.DEFAULT_VIEW, this, getLastSelectedPathComponent()));
 				}
 			}
 
