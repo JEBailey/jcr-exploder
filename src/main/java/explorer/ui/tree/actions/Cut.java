@@ -23,7 +23,7 @@ import explorer.ui.ResourceClipboardBuffer;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Cut Node", description = "Move a node to a new location")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class Cut extends AbstractAction implements EventHandler {
 

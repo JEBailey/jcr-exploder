@@ -28,7 +28,7 @@ import explorer.ui.contentview.TabContainer;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Delete Node", description = "Delete a Node")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class DeleteNode extends AbstractAction implements EventHandler {
 

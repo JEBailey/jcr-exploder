@@ -23,7 +23,7 @@ import explorer.ui.ResourceClipboardBuffer;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Copy Resource", description = "Copies resource")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class Copy extends AbstractAction implements EventHandler {
 

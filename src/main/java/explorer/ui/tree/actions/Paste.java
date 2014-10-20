@@ -35,7 +35,7 @@ import explorer.ui.contentview.TabContainer;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Paste Node", description = "Pastes the Resource from clipboard")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class Paste extends AbstractAction implements EventHandler {
 

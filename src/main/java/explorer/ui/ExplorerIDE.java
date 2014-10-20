@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import explorer.ui.contentview.TabContainer;
-import explorer.ui.table.JcrTableModelImpl;
 
 @Component(description = "Swing based Sling explorer", label = "Sling Explorer IDE", name = "ExplorerIDE")
 public class ExplorerIDE implements Runnable {
@@ -41,14 +40,12 @@ public class ExplorerIDE implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(ExplorerIDE.class);
 
 	@Reference
-	private JcrTableModelImpl tableModel;
-
-	@Reference
 	private JTree jTree;
 	
 	@Reference
 	private TabContainer editorTab;
 
+	@Reference
 	private JTable table;
 
 	/**
@@ -56,7 +53,7 @@ public class ExplorerIDE implements Runnable {
 	 */
 	private void initialize() {
 		frmJcrExploder = new JFrame();
-		frmJcrExploder.setTitle("Sling Explorer GUI");
+		frmJcrExploder.setTitle("Sling Resource Explorer");
 		frmJcrExploder.setBounds(100, 100, 800, 600);
 		frmJcrExploder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -72,17 +69,10 @@ public class ExplorerIDE implements Runnable {
 		JScrollPane propertiesScrollPane = new JScrollPane();
 		splitPane_1.setRightComponent(propertiesScrollPane);
 
-		table = new JTable();
-		table.setFocusable(false);
-		table.setIntercellSpacing(new Dimension(0, 1));
-		table.setBounds(new Rectangle(1, 1, 1, 1));
-		table.setShowVerticalLines(false);
-		table.setModel(tableModel);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		propertiesScrollPane.setViewportView(table);
+		//propertiesScrollPane.setViewportView(table);
 
 		splitPane_1.setLeftComponent(editorTab);
-		splitPane_1.setDividerLocation(400);
+		splitPane_1.setDividerLocation(320);
 
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);

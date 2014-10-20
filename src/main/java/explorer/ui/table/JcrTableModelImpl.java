@@ -26,7 +26,7 @@ import explorer.ui.EventTypes;
 @SuppressWarnings("serial")
 @Component
 @Service(value = { JcrTableModelImpl.class, EventHandler.class })
-@Properties(value = { @org.apache.felix.scr.annotations.Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION) })
+@Properties(value = { @org.apache.felix.scr.annotations.Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION) })
 public class JcrTableModelImpl extends AbstractTableModel implements EventHandler {
 
 	Node node;

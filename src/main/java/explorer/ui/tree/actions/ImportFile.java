@@ -46,7 +46,7 @@ import explorer.ui.EventTypes;
 @SuppressWarnings("serial")
 @Component(name = "Sling Explorer Menu Action - Import File", description = "Updates the Editor Pane with the correct view")
 @Service(value = { AbstractAction.class, EventHandler.class })
-@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.NEW_SELECTION),
+@Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.VIEW_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })
 public class ImportFile extends AbstractAction implements EventHandler {
 
