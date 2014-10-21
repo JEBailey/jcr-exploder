@@ -1,11 +1,11 @@
-jcr-exploder
+Sling Resource Explorer
 ============
 
-swing based jcr (jackrabbit) explorer for osgi platforms. currently tested with Sling and CQ5
+Swing based jcr (jackrabbit) explorer built on top of the Sling framework.
 
 example
 
-![example screen](/JEBailey/jcr-exploder/raw/master/images/example.png)
+![example screen](/images/example.png?raw=true)
 
 Installation
 ============
