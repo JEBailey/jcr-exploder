@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 public class IconCache {
 
 
-	public enum Type { application, code, css, db, doc, esp, file, folder, folder_open, gif, html, jpeg, node_select_child, png, txt}
+	public enum Type { application, code, css, db, doc, esp, file, folder, folder_open, gif, html, jpeg,audio, node_select_child, png, txt}
 	
     private static final Logger log = LoggerFactory
 			.getLogger(IconCache.class);
