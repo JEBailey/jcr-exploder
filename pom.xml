@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jcr.exploder</groupId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<properties>
 		<project.sourceEncoding>UTF-8</project.sourceEncoding>
@@ -75,7 +75,7 @@
 				<version>2.3.7</version>
 				<configuration>
 					<instructions>
-						<Export-Package></Export-Package>
+						<Export-Package>explorer.*</Export-Package>
 						<Bundle-Activator>explorer.ui.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
@@ -211,6 +211,12 @@
 			<groupId>org.apache.tika</groupId>
 			<artifactId>tika-core</artifactId>
 			<version>1.2</version>
+			<type>bundle</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jackrabbit</groupId>
+			<artifactId>jackrabbit-api</artifactId>
+			<version>2.7.5</version>
 			<type>bundle</type>
 		</dependency>
 	</dependencies>

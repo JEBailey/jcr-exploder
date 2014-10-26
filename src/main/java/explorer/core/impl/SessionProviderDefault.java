@@ -38,6 +38,9 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.principal.PrincipalManager;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -46,7 +49,7 @@ import explorer.core.api.SessionProvider;
 
 @Component
 @Service
-public class SessionProviderDefault implements SessionProvider {
+public class SessionProviderDefault implements SessionProvider, JackrabbitSession {
 
 	@Reference
     protected SlingRepository repository;
@@ -294,7 +297,17 @@ public class SessionProviderDefault implements SessionProvider {
 	@Override
 	public void authenticate() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	@Override
+	public PrincipalManager getPrincipalManager() throws AccessDeniedException,
+			UnsupportedRepositoryOperationException, RepositoryException {
+		return ((JackrabbitSession)session).getPrincipalManager();
 	}
 
+	@Override
+	public UserManager getUserManager() throws AccessDeniedException, UnsupportedRepositoryOperationException,
+			RepositoryException {
+		return ((JackrabbitSession)session).getUserManager();
+	}
 }
