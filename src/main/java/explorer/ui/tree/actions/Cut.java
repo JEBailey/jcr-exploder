@@ -29,8 +29,6 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import explorer.ui.EventTypes;
 import explorer.ui.ResourceClipboardBuffer;
@@ -50,8 +48,6 @@ public class Cut extends AbstractAction implements EventHandler {
 	public Cut() {
 		super("Cut");
 	}
-	
-	private static final Logger log = LoggerFactory.getLogger(Cut.class);
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {

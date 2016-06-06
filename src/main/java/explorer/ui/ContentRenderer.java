@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
@@ -87,10 +88,13 @@ public class ContentRenderer {
 		return prop;
 	}
 	
+	@SuppressWarnings("serial")
 	@Activate
+	@Modified
 	private void activate(ComponentContext context) throws InvalidSyntaxException{
 		tracker = new ServiceTracker(context.getBundleContext(), MimeProvider.class.getName(),null);
 		tracker.open();
+		
 		defaultPanel = new JPanel(){
 			{
 				add(new JLabel("No content display is available for this content"));

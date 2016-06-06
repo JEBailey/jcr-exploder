@@ -20,22 +20,12 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
-import javax.jcr.InvalidItemStateException;
-import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
-import javax.jcr.ReferentialIntegrityException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -44,7 +34,6 @@ import javax.swing.JToolBar;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ValueMap;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -91,38 +80,33 @@ public class EditorView implements MimeProvider {
 			{
 				setFocusable(false);
 				// setIcon(pause);
-				addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						String content = editorTextArea.getText();
-						if (NodeTypeUtil.isType(resource, "nt:file")) {
-							Resource nodeContent = resource
-									.getChild("jcr:content");
-							if (nodeContent != null) {
-								try {
-									Node node = nodeContent
-											.adaptTo(Node.class);
-									Session session = node.getSession();
-									Binary binary = session
-											.getValueFactory()
-											.createBinary(
-													new ByteArrayInputStream(
-															content.getBytes()));
-									node.setProperty("jcr:data", binary);
-									session.save();
-								} catch (Exception e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
+				addActionListener(evt -> {
+					String content = editorTextArea.getText();
+					if (NodeTypeUtil.isType(resource, "nt:file")) {
+						Resource nodeContent = resource.getChild("jcr:content");
+						if (nodeContent != null) {
+							try {
+								Node node = nodeContent.adaptTo(Node.class);
+								Session session = node.getSession();
+								Binary binary = session.getValueFactory()
+										.createBinary(
+												new ByteArrayInputStream(
+														content.getBytes()));
+								node.setProperty("jcr:data", binary);
+								session.save();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 						}
-						if (playState) {
-							// setIcon(play);
-						} else {
-							// setIcon(pause);
-						}
-						// vb.setPause(playState);
-						playState = !playState;
 					}
+					if (playState) {
+						// setIcon(play);
+					} else {
+						// setIcon(pause);
+					}
+					// vb.setPause(playState);
+					playState = !playState;
 				});
 			}
 		});
