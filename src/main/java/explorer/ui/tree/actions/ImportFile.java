@@ -1,3 +1,18 @@
+/*
+Copyright 2016 JE Bailey
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
 package explorer.ui.tree.actions;
 
 import static org.osgi.service.event.EventConstants.EVENT_TOPIC;
@@ -38,7 +53,7 @@ import explorer.node.NodeTypeUtil;
 import explorer.ui.EventTypes;
 
 @SuppressWarnings("serial")
-@Component(name = "Sling Explorer Menu Action - Import File", description = "Updates the Editor Pane with the correct view")
+@Component(name = "Sling Explorer Menu Action - Import File")
 @Service(value = { AbstractAction.class, EventHandler.class })
 @Properties(value = { @Property(name = EVENT_TOPIC, value = EventTypes.TREE_SELECTION),
 		@Property(name = "menuType", value = "TREEMENU") })

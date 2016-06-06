@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+Copyright 2016 JE Bailey
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -5,66 +21,13 @@
 	<version>0.0.5-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<properties>
-		<project.sourceEncoding>UTF-8</project.sourceEncoding>
-		<project.java.version>1.6</project.java.version>
-		<!-- Felix -->
-		<felix.framework>4.0.2</felix.framework>
-		<felix.maven-bundle-plugin>2.3.7</felix.maven-bundle-plugin>
-		<felix.maven-src-plugin>1.7.4</felix.maven-src-plugin>
-		<org.apache.felix.org.osgi.core>1.4.0</org.apache.felix.org.osgi.core>
-		<!-- Maven -->
-		<org.apache.maven.plugins.maven-compiler-plugin.version>2.3.2</org.apache.maven.plugins.maven-compiler-plugin.version>
-		<org.apache.maven.plugins.maven-surefire-plugin.version>2.12</org.apache.maven.plugins.maven-surefire-plugin.version>
-		<!-- Sling -->
-		<org.apache.sling.maven-sling-plugin.version>2.1.0</org.apache.sling.maven-sling-plugin.version>
+		<sling.java.version>8</sling.java.version>
 	</properties>
 	<build>
 		<plugins>
-			<!-- Maven will compile our source java classes using the "project.build.java.version" 
-				specified -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>${project.java.version}</source>
-					<target>${project.java.version}</target>
-				</configuration>
-			</plugin>
-			<!-- this will install the OSGi bundle into Sling for us we now upload 
-				the jar file automatically when we build with this plug-in -->
-			<plugin>
-				<groupId>org.apache.sling</groupId>
-				<artifactId>maven-sling-plugin</artifactId>
-				<version>2.1.0  </version>
-				<executions>
-					<execution>
-						<id>install-bundle</id>
-						<goals>
-							<goal>install</goal>
-						</goals>
-						<configuration>
-							<slingUrl>http://localhost:8080/system/console/install</slingUrl>
-							<user>admin</user>
-							<password>admin</password>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- This will create the OSGI-INF for us that handles the Activator 
-					Class for us we now auto-generate the details in our bundle with this plug-in -->
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-scr-plugin</artifactId>
-				<version>1.7.4</version>
-				<executions>
-					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<goals>
-							<goal>scr</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<!-- This will create the OSGi /META-INF/MANIFEST.MF for us we now auto-generated 
@@ -72,9 +35,12 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
-				<version>2.3.7</version>
 				<configuration>
 					<instructions>
+						<Import-Package>
+							java.swing.*,
+							*
+						</Import-Package>
 						<Export-Package>explorer.*</Export-Package>
 						<Bundle-Activator>explorer.ui.Activator</Bundle-Activator>
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
@@ -159,7 +125,6 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
-			<version>1.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fifesoft</groupId>
@@ -173,10 +138,10 @@
 			<type>bundle</type>
 		</dependency>
 		<dependency>
-	<groupId>org.apache.felix</groupId>
-	<artifactId>org.apache.felix.framework</artifactId>
-	<version>3.0.8</version>
-</dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.framework</artifactId>
+			<version>3.0.8</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.jcr.jcr-wrapper</artifactId>
@@ -222,4 +187,9 @@
 	</dependencies>
 	<artifactId>jcr.exploder</artifactId>
 	<name>Sling GUI Based Explorer</name>
+	<parent>
+		<groupId>org.apache.sling</groupId>
+		<artifactId>sling</artifactId>
+		<version>23</version>
+	</parent>
 </project>
