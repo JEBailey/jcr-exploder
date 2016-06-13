@@ -16,6 +16,7 @@ limitations under the License.
 package explorer.ui.preview;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -51,47 +52,24 @@ public class PreviewPanel extends JPanel {
 
 	@Activate
 	public void activate() {
-		JToolBar bar = new JToolBar();
-		bar.add(Box.createHorizontalGlue());
-		bar.add(new JButton(checkmark+"Properties"){
+		MouseAdapter mouse =  new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		};
+		
+		JButton propsButton = new JButton(checkmark+"Properties"){
 			{
 				setFocusable(false);
 				setEnabled(false);
-				addMouseListener(new MouseListener() {
-					
-					@Override
-					public void mouseReleased(MouseEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void mousePressed(MouseEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void mouseExited(MouseEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void mouseEntered(MouseEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
 			}
-		});
-		bar.add(new JButton("File"));
+		};
+		
+		
+		JToolBar bar = new JToolBar();
+		bar.add(Box.createHorizontalGlue());
+		bar.add(propsButton);
+		bar.add(new JButton(" File "));
 		bar.setFloatable(false);
 
 		propertiesPane = new JScrollPane(propertyTable);

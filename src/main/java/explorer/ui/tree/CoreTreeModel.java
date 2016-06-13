@@ -88,9 +88,7 @@ public class CoreTreeModel implements ResourceTreeModel {
 	public int getChildCount(Object parent) {
 		int reply = 0;
 		Resource resource = (Resource) parent;
-		Iterator<Resource> it = resource.listChildren();
-		while (it.hasNext()) {
-			it.next();
+		for (Resource child:resource.getChildren()){
 			++reply;
 		}
 		return reply;
